@@ -1,6 +1,6 @@
-import { QuestionType, type Props } from '../type';
-import styles from './FormBuilder.module.css';
-import { useFormBuilder } from '../hooks/useFormBuilder';
+import { useFormBuilder } from "../../hooks/useFormBuilder";
+import { QuestionType, type Props } from "../../type";
+import styles from "./FormBuilder.module.css";
 
 const FormBuilder = ({ className, ...props }: Props) => {
   const {
@@ -20,15 +20,15 @@ const FormBuilder = ({ className, ...props }: Props) => {
   } = useFormBuilder();
 
   return (
-    <div className={`${styles.container} ${className || ''}`} {...props}>
+    <div className={`${styles.container} ${className || ""}`} {...props}>
       <div className={styles.header}>
         <h1>Create form</h1>
-        <button 
-          className={styles.saveButton} 
-          onClick={saveForm} 
+        <button
+          className={styles.saveButton}
+          onClick={saveForm}
           disabled={isLoading || !title}
         >
-          {isLoading ? 'Saving...' : 'Save Form'}
+          {isLoading ? "Saving..." : "Save Form"}
         </button>
       </div>
 
@@ -52,45 +52,56 @@ const FormBuilder = ({ className, ...props }: Props) => {
       {questions.map((question, questionIndex) => (
         <div key={question.tempId} className={styles.questionCard}>
           <form className={styles.questionHeader}>
-            
-              <input
-                className={styles.input}
-                type="text"
-                value={question.text}
-                onChange={(event) => updateQuestion(questionIndex, 'text', event.target.value)}
-                placeholder="Question Text"
-              />
-             
-            
+            <input
+              className={styles.input}
+              type="text"
+              value={question.text}
+              onChange={(event) =>
+                updateQuestion(questionIndex, "text", event.target.value)
+              }
+              placeholder="Question Text"
+            />
+
             <div className={styles.selectWrapper}>
               <select
                 className={styles.select}
                 value={question.type}
-                onChange={(event) => updateQuestion(questionIndex, 'type', event.target.value as QuestionType)}
+                onChange={(event) =>
+                  updateQuestion(
+                    questionIndex,
+                    "type",
+                    event.target.value as QuestionType,
+                  )
+                }
               >
                 <option value={QuestionType.TEXT}>Text Answer</option>
-                <option value={QuestionType.MULTIPLE_CHOICE}>Multiple Choice</option>
+                <option value={QuestionType.MULTIPLE_CHOICE}>
+                  Multiple Choice
+                </option>
                 <option value={QuestionType.CHECKBOX}>Checkboxes</option>
                 <option value={QuestionType.DATE}>Date</option>
               </select>
             </div>
-             <button 
-                className={styles.deleteQuestionBtn} 
-                onClick={() => removeQuestion(questionIndex)}
-              >
-                Delete
-              </button>
+            <button
+              className={styles.deleteQuestionBtn}
+              onClick={() => removeQuestion(questionIndex)}
+            >
+              Delete
+            </button>
           </form>
-          <div className={styles.questionFooter}>
-             
-          </div>
+          <div className={styles.questionFooter}></div>
 
-          {(question.type === QuestionType.MULTIPLE_CHOICE || question.type === QuestionType.CHECKBOX) && (
+          {(question.type === QuestionType.MULTIPLE_CHOICE ||
+            question.type === QuestionType.CHECKBOX) && (
             <div className={styles.optionsList}>
               {question.options?.map((option, optionIndex) => (
                 <div key={option.id} className={styles.optionRow}>
                   <input
-                    type={question.type === QuestionType.MULTIPLE_CHOICE ? 'radio' : 'checkbox'}
+                    type={
+                      question.type === QuestionType.MULTIPLE_CHOICE
+                        ? "radio"
+                        : "checkbox"
+                    }
                     disabled
                     className={styles.optionInput}
                   />
@@ -98,10 +109,16 @@ const FormBuilder = ({ className, ...props }: Props) => {
                     className={styles.input}
                     type="text"
                     value={option.value}
-                    onChange={(event) => updateOption(questionIndex, optionIndex, event.target.value)}
+                    onChange={(event) =>
+                      updateOption(
+                        questionIndex,
+                        optionIndex,
+                        event.target.value,
+                      )
+                    }
                     placeholder={`Option ${optionIndex + 1}`}
                   />
-                  <button 
+                  <button
                     className={styles.deleteOptionBtn}
                     onClick={() => removeOption(questionIndex, optionIndex)}
                   >
@@ -109,7 +126,7 @@ const FormBuilder = ({ className, ...props }: Props) => {
                   </button>
                 </div>
               ))}
-              <button 
+              <button
                 className={styles.addOptionBtn}
                 onClick={() => addOption(questionIndex)}
               >

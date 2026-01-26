@@ -1,7 +1,7 @@
-import { Link } from 'react-router-dom';
-import { QuestionType } from '../type';
-import styles from './FormFiller.module.css';
-import { useFormFiller } from '../hooks/useFormFiller';
+import { Link } from "react-router-dom";
+import { useFormFiller } from "../../hooks/useFormFiller";
+import { QuestionType } from "../../type";
+import styles from "./FormFiller.module.css";
 
 const FormFiller = () => {
   const {
@@ -42,30 +42,42 @@ const FormFiller = () => {
 
       {form.questions.map((question) => (
         <div key={question.id} className={styles.questionCard}>
-          <div className={styles.questionText}>
-            {question.text}
-            
-          </div>
-          
+          <div className={styles.questionText}>{question.text}</div>
+
           {question.type === QuestionType.TEXT && (
             <input
-              className={`${styles.input} ${errors[question.id] ? styles.inputError : ''}`}
+              className={`${styles.input} ${errors[question.id] ? styles.inputError : ""}`}
               type="text"
               placeholder="Your answer"
-              onChange={(event) => handleInputChange(question.id, event.target.value)}
+              onChange={(event) =>
+                handleInputChange(question.id, event.target.value)
+              }
             />
           )}
 
           {question.type === QuestionType.DATE && (
             <input
-              className={`${styles.input} ${errors[question.id] ? styles.inputError : ''}`}
+              className={`${styles.input} ${errors[question.id] ? styles.inputError : ""}`}
               type="date"
-              onChange={(event) => handleInputChange(question.id, event.target.value)}
+              onChange={(event) =>
+                handleInputChange(question.id, event.target.value)
+              }
             />
           )}
 
           {question.type === QuestionType.MULTIPLE_CHOICE && (
-            <div className={errors[question.id] ? styles.inputError : ''} style={errors[question.id] ? {border: '1px solid #d93025', borderRadius: '4px', padding: '10px'} : {}}>
+            <div
+              className={errors[question.id] ? styles.inputError : ""}
+              style={
+                errors[question.id]
+                  ? {
+                      border: "1px solid #d93025",
+                      borderRadius: "4px",
+                      padding: "10px",
+                    }
+                  : {}
+              }
+            >
               {question.options?.map((option) => (
                 <label key={option.id} className={styles.radioOption}>
                   <input
@@ -73,7 +85,9 @@ const FormFiller = () => {
                     type="radio"
                     name={question.id}
                     value={option.value}
-                    onChange={(event) => handleInputChange(question.id, event.target.value)}
+                    onChange={(event) =>
+                      handleInputChange(question.id, event.target.value)
+                    }
                   />
                   {option.value}
                 </label>
@@ -82,14 +96,31 @@ const FormFiller = () => {
           )}
 
           {question.type === QuestionType.CHECKBOX && (
-            <div className={errors[question.id] ? styles.inputError : ''} style={errors[question.id] ? {border: '1px solid #d93025', borderRadius: '4px', padding: '10px'} : {}}>
+            <div
+              className={errors[question.id] ? styles.inputError : ""}
+              style={
+                errors[question.id]
+                  ? {
+                      border: "1px solid #d93025",
+                      borderRadius: "4px",
+                      padding: "10px",
+                    }
+                  : {}
+              }
+            >
               {question.options?.map((option) => (
                 <label key={option.id} className={styles.checkboxOption}>
                   <input
                     className={styles.checkboxInput}
                     type="checkbox"
                     value={option.value}
-                    onChange={(event) => handleCheckboxChange(question.id, option.value, event.target.checked)}
+                    onChange={(event) =>
+                      handleCheckboxChange(
+                        question.id,
+                        option.value,
+                        event.target.checked,
+                      )
+                    }
                   />
                   {option.value}
                 </label>
@@ -99,7 +130,13 @@ const FormFiller = () => {
 
           {errors[question.id] && (
             <div className={styles.error}>
-              <svg height="24" viewBox="0 0 24 24" width="24" focusable="false" fill="#d93025">
+              <svg
+                height="24"
+                viewBox="0 0 24 24"
+                width="24"
+                focusable="false"
+                fill="#d93025"
+              >
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
               </svg>
               {errors[question.id]}
@@ -108,12 +145,12 @@ const FormFiller = () => {
         </div>
       ))}
 
-      <button 
-        className={styles.submitButton} 
+      <button
+        className={styles.submitButton}
         onClick={handleSubmit}
         disabled={isSubmitting}
       >
-        {isSubmitting ? 'Submitting...' : 'Submit'}
+        {isSubmitting ? "Submitting..." : "Submit"}
       </button>
     </div>
   );

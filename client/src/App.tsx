@@ -1,8 +1,8 @@
-import { Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
-import FormBuilder from './pages/FormBuilder';
-import FormFiller from './pages/FormFiller';
-import FormResponses from './pages/FormResponses';
+import { Route, Routes } from "react-router-dom";
+import FormBuilder from "./pages/FormBuilder/FormBuilder";
+import FormFiller from "./pages/FormFiller/FormFiller";
+import FormResponses from "./pages/FormResponses/FormResponses";
+import Home from "./pages/Home/Home";
 
 function App() {
   return (
