@@ -1,9 +1,12 @@
 
+import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useGetFormQuery, useGetResponsesQuery } from '../store/api';
 import styles from './FormResponses.module.css';
+import { type Props, type Response, type Answer, type Question } from '../type';
 
-const FormResponses = () => {
+
+const FormResponses: React.FC<Props> = ({ className, ...props }) => {
   const { id } = useParams<{ id: string }>();
   const { data: form, isLoading: isFormLoading } = useGetFormQuery(id!);
   const { data: responses, isLoading: isResponsesLoading } = useGetResponsesQuery(id!);
@@ -12,11 +15,11 @@ const FormResponses = () => {
   if (!form) return <div>Form not found</div>;
 
   const getQuestionText = (questionId: string) => {
-    return form.questions.find((question: { id: string }) => question.id === questionId)?.text || 'Unknown Question';
+    return form.questions.find((question: Question) => question.id === questionId)?.text || 'Unknown Question';
   };
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${className || ''}`} {...props}>
       <Link to="/" className={styles.backLink}>&larr; Back to Forms</Link>
 
       <div className={styles.header}>
@@ -25,10 +28,10 @@ const FormResponses = () => {
       </div>
 
       {responses && responses.length > 0 ? (
-        responses.map((response: { id: string; answers: { questionId: string; values: string[] }[] }, index: number) => (
+        responses.map((response: Response, index: number) => (
           <div key={response.id} className={styles.responseCard}>
             <div className={styles.responseHeader}>Response #{index + 1}</div>
-            {response.answers.map((answer: { questionId: string; values: string[] }) => (
+            {response.answers.map((answer: Answer) => (
               <div key={answer.questionId} className={styles.answerRow}>
                 <div className={styles.questionText}>{getQuestionText(answer.questionId)}</div>
                 <div className={styles.answerText}>

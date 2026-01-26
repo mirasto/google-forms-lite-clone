@@ -1,8 +1,8 @@
-import { QuestionType } from '../types';
+import { QuestionType, type Props } from '../type';
 import styles from './FormBuilder.module.css';
 import { useFormBuilder } from '../hooks/useFormBuilder';
 
-const FormBuilder: React.FC = () => {
+const FormBuilder = ({ className, ...props }: Props) => {
   const {
     title,
     setTitle,
@@ -20,7 +20,7 @@ const FormBuilder: React.FC = () => {
   } = useFormBuilder();
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${className || ''}`} {...props}>
       <div className={styles.header}>
         <h1>Create form</h1>
         <button 

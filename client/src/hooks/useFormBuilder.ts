@@ -2,17 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { useCreateFormMutation } from '../store/api';
-import { QuestionType, type Question } from '../types';
-
-export interface DraftOption {
-  id: string;
-  value: string;
-}
-
-export interface DraftQuestion extends Omit<Question, 'id' | 'options'> {
-  tempId: string;
-  options?: DraftOption[];
-}
+import { QuestionType, type DraftQuestion } from '../type';
 
 export const useFormBuilder = () => {
   const navigate = useNavigate();
@@ -95,9 +85,9 @@ export const useFormBuilder = () => {
 
     try {
 
-      const formattedQuestions = questions.map(({ tempId, options, ...rest }) => ({
+      const formattedQuestions = questions.map(({ tempId, ...rest }) => ({
         ...rest,
-        options: options?.filter(option => option.value.trim()).map(option => option.value) || []
+        options: rest.options?.filter(option => option.value.trim()) || []
       }));
       
       await createForm({ title, description, questions: formattedQuestions }).unwrap();

@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { graphqlRequestBaseQuery } from '@rtk-query/graphql-request-base-query';
-import type { Form, Response, CreateFormInput, SubmitResponseInput } from '../types';
+import type { Form, Response, CreateFormInput, SubmitResponseInput } from '../type';
 import { GraphQLClient } from 'graphql-request';
 
 const client = new GraphQLClient('http://localhost:4000/');
@@ -37,7 +37,10 @@ export const api = createApi({
                 id
                 text
                 type
-                options
+                options {
+                  id
+                  value
+                }
               }
             }
           }
@@ -78,7 +81,10 @@ export const api = createApi({
                 id
                 text
                 type
-                options
+                options {
+                  id
+                  value
+                }
                 required
               }
             }

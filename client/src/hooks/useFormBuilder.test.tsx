@@ -1,7 +1,7 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useFormBuilder } from './useFormBuilder';
-import { QuestionType } from '../types';
+import { QuestionType } from '../type';
 import * as reactRouterDom from 'react-router-dom';
 
 
@@ -12,8 +12,25 @@ vi.mock('react-router-dom', () => ({
 const mockCreateForm = vi.fn();
 vi.mock('../store/api', () => ({
   useCreateFormMutation: () => [mockCreateForm, { isLoading: false }],
-
+  api: {
+    reducerPath: 'api',
+    reducer: () => ({}),
+    middleware: {
+      concat: vi.fn(() => []), 
+    }
+  }
 }));
+
+vi.mock('@reduxjs/toolkit', async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...(actual as Record<string, unknown>),
+    configureStore: () => ({
+      getState: () => ({}),
+      dispatch: vi.fn(),
+    }),
+  };
+});
 
 
 const mockAlert = vi.spyOn(window, 'alert').mockImplementation(() => {});

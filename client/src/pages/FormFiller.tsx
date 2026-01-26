@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
-import { QuestionType } from '../types';
+import { QuestionType, type Props } from '../type';
 import styles from './FormFiller.module.css';
 import { useFormFiller } from '../hooks/useFormFiller';
 
-const FormFiller: React.FC = () => {
+const FormFiller = (props: Props) => {
   const {
     form,
     isFormLoading,
@@ -66,16 +66,16 @@ const FormFiller: React.FC = () => {
 
           {question.type === QuestionType.MULTIPLE_CHOICE && (
             <div className={errors[question.id] ? styles.inputError : ''} style={errors[question.id] ? {border: '1px solid #d93025', borderRadius: '4px', padding: '10px'} : {}}>
-              {question.options?.map((optionValue) => (
-                <label key={optionValue} className={styles.radioOption}>
+              {question.options?.map((option) => (
+                <label key={option.id} className={styles.radioOption}>
                   <input
                     className={styles.radioInput}
                     type="radio"
                     name={question.id}
-                    value={optionValue}
+                    value={option.value}
                     onChange={(event) => handleInputChange(question.id, event.target.value)}
                   />
-                  {optionValue}
+                  {option.value}
                 </label>
               ))}
             </div>
@@ -83,15 +83,15 @@ const FormFiller: React.FC = () => {
 
           {question.type === QuestionType.CHECKBOX && (
             <div className={errors[question.id] ? styles.inputError : ''} style={errors[question.id] ? {border: '1px solid #d93025', borderRadius: '4px', padding: '10px'} : {}}>
-              {question.options?.map((optionValue) => (
-                <label key={optionValue} className={styles.checkboxOption}>
+              {question.options?.map((option) => (
+                <label key={option.id} className={styles.checkboxOption}>
                   <input
                     className={styles.checkboxInput}
                     type="checkbox"
-                    value={optionValue}
-                    onChange={(event) => handleCheckboxChange(question.id, optionValue, event.target.checked)}
+                    value={option.value}
+                    onChange={(event) => handleCheckboxChange(question.id, option.value, event.target.checked)}
                   />
-                  {optionValue}
+                  {option.value}
                 </label>
               ))}
             </div>
