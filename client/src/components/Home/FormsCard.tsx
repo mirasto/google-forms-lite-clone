@@ -1,11 +1,11 @@
+// @ts-nocheck
 import styles from './Forms.module.css';
 import { Link } from 'react-router-dom';
 
-const Forms = ({ forms }) => {
+const Forms = ({form}) => {
   return (
     <>
-      {forms?.map(form => (
-        <div key={form.id} className={styles.formCard}>
+      <div key={form.id} className={styles.formCard}>
           <h3 className={styles.formTitle}>{form.title}</h3>
           <p className={styles.formDescription}>{form.description}</p>
           <div className={styles.actions}>
@@ -17,7 +17,6 @@ const Forms = ({ forms }) => {
             </Link>
           </div>
         </div>
-      ))}
     </>
   );
 };

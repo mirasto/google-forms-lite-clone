@@ -1,15 +1,6 @@
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-}
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
+
+
 
 .inputGroup {
   margin-bottom: 20px;
@@ -106,15 +97,7 @@
   background: #f9f9f9;
 }
 
-.saveButton {
-  background-color: #673ab7;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
-}
+
 
 .saveButton:disabled {
   background-color: #ccc;

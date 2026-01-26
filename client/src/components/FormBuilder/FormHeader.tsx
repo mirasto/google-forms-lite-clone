@@ -1,9 +1,9 @@
+
 import { useFormBuilder } from "../../hooks/useFormBuilder";
-import styles from "./FormBuilder.module.css";
-import BuilderHeader from "../../components/FormBuilder/BuilderHeader";
-import BuilderQuestionCard from "../../components/FormBuilder/BuilderQuesionCard";
+
+
 const FormBuilder = () => {
-  const { title, setTitle, description, setDescription, questions, addQuestion, removeQuestion, updateQuestion, saveForm, isLoading } = useFormBuilder()
+  const { title, setTitle, description, setDescription, questions, addQuestion, removeQuestion, updateQuestion, saveForm, isLoading } = useFormBuilder();
 
   return (
     <div className={styles.container}>
@@ -17,9 +17,11 @@ const FormBuilder = () => {
         {questions.map((question, index) => (
           <BuilderQuestionCard
             key={question.tempId}
+            index={index}
             question={question}
             updateQuestion={updateQuestion}
             removeQuestion={removeQuestion}
+            // Передаємо методи для опцій нижче
             optionMethods={{ addOption, updateOption, removeOption }}
           />
         ))}
@@ -31,5 +33,3 @@ const FormBuilder = () => {
     </div>
   );
 };
-
-export default FormBuilder;

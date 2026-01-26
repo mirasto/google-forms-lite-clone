@@ -1,0 +1,31 @@
+
+.radioOption,
+.checkboxOption {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  cursor: pointer;
+}
+
+
+
+.input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.input:focus {
+  outline: 2px solid #673ab7;
+  border-color: transparent;
+}
+
+.inputError {
+  border: 1px solid #d93025;
+}
+
+.inputError:focus {
+  outline: 2px solid #d93025;
+}

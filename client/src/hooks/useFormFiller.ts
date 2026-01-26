@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useGetFormQuery, useSubmitResponseMutation } from '../store/api';

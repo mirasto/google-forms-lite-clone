@@ -1,0 +1,20 @@
+.questionCard {
+  background: white;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 12px;
+}
+.questionText {
+  font-size: 16px;
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+.error {
+  color: #d93025;
+  margin-top: 10px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
