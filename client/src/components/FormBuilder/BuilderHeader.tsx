@@ -40,7 +40,6 @@ const BuilderHeader = ({
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Untitled Form"
-          aria-label="Form Title"
         />
 
         <textarea
@@ -48,13 +47,6 @@ const BuilderHeader = ({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Form description"
-          aria-label="Form Description"
-          rows={1}
-          onInput={(e) => {
-            const target = e.target as HTMLTextAreaElement;
-            target.style.height = "auto";
-            target.style.height = `${target.scrollHeight}px`;
-          }}
         />
       </div>
     </header>

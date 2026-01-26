@@ -41,9 +41,6 @@ const FormFiller = () => {
             <Link to="/" className={styles.homeLink}>Submit another response</Link>
           </div>
         </div>
-        <footer className={styles.fillerFooter}>
-          Google Forms Clone
-        </footer>
       </div>
     );
   }
@@ -79,20 +76,9 @@ const FormFiller = () => {
           >
             {isSubmitting ? "Submitting..." : "Submit"}
           </button>
-
-          <button
-            type="button"
-            className={styles.clearButton}
-            onClick={() => window.location.reload()}
-          >
-            Clear form
-          </button>
         </div>
       </form>
 
-      <footer className={styles.fillerFooter}>
-        Google Forms Clone
-      </footer>
     </div>
   );
 };

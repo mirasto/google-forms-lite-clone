@@ -111,21 +111,6 @@
   cursor: not-allowed;
 }
 
-.clearButton {
-  background: transparent;
-  border: none;
-  color: #673ab7;
-  font-weight: 500;
-  font-size: 14px;
-  cursor: pointer;
-  padding: 8px 12px;
-  border-radius: 4px;
-}
-
-.clearButton:hover {
-  background: rgba(103, 58, 183, 0.05);
-}
-
 .successCard {
   background: white;
   padding: 24px;
@@ -156,9 +141,3 @@
   text-decoration: underline;
 }
 
-.fillerFooter {
-  text-align: center;
-  margin-top: 24px;
-  color: #5f6368;
-  font-size: 12px;
-}

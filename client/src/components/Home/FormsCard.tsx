@@ -10,7 +10,7 @@ const FormsCard = ({ form }: FormsCardProps) => {
   return (
     <div className={styles.formCard}>
       <div className={styles.thumbnail}>
-        <div className={styles.formIcon}>📄</div>
+        <div className={styles.formTitle}>{form.title}</div>
       </div>
       <div className={styles.cardContent}>
         <h3 className={styles.formTitle} title={form.title}>

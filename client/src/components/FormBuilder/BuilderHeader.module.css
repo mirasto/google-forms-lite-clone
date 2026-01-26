@@ -79,3 +79,7 @@
   background-color: #ccc;
   cursor: not-allowed;
 }
+
+textarea{
+  resize: none;
+}

@@ -42,7 +42,6 @@ const Home = () => {
           </div>
         ) : (
           <div className={styles.emptyState}>
-            <div className={styles.emptyIcon}>📝</div>
             <h3>No forms yet</h3>
             <p>Create your first form to start collecting responses.</p>
             <Link to="/forms/new" className={styles.emptyButton}>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { useGetFormQuery, useSubmitResponseMutation } from '../store/api';
 
 export const useFormFiller = () => {
@@ -53,7 +54,7 @@ export const useFormFiller = () => {
     const newErrors: Record<string, string> = {};
     let hasErrors = false;
 
-    // Валідація обов'язкових полів
+ 
     form.questions.forEach((question) => {
       const answer = answers[question.id];
       if (question.required && (!answer || answer.length === 0 || !answer[0].trim())) {
@@ -64,7 +65,7 @@ export const useFormFiller = () => {
 
     if (hasErrors) {
       setErrors(newErrors);
-      // Скролимо до першої помилки
+ 
       const firstErrorId = Object.keys(newErrors)[0];
       const element = document.getElementById(`question-${firstErrorId}`);
       if (element) {
@@ -83,9 +84,10 @@ export const useFormFiller = () => {
         formId: form.id,
         answers: answersList,
       }).unwrap();
+      Notify.success('Response submitted successfully!');
     } catch (err) {
       console.error('Failed to submit response', err);
-      alert('Failed to submit response. Please check your connection.');
+      Notify.failure('Failed to submit response. Please check your connection.');
     }
   };
 

@@ -55,7 +55,6 @@ const FormResponses = () => {
           ))
         ) : (
           <div className={styles.noResponses}>
-            <div className={styles.emptyIcon}> Empty 📊</div>
             <p>No responses yet for this form.</p>
           </div>
         )}

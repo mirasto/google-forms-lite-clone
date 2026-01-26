@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { useCreateFormMutation } from '../store/api';
 import { QuestionType, type DraftQuestion } from '../type';
 
@@ -62,22 +63,22 @@ export const useFormBuilder = () => {
 
   const saveForm = async (): Promise<void> => {
     if (!title.trim()) {
-      alert('Title is required');
+      Notify.failure('Title is required');
       return;
     }
     if (questions.length === 0) {
-      alert('At least one question is required');
+      Notify.failure('At least one question is required');
       return;
     }
     for (const question of questions) {
       if (!question.text.trim()) {
-        alert('All questions must have text');
+        Notify.failure('All questions must have text');
         return;
       }
       if (question.type === QuestionType.MULTIPLE_CHOICE || question.type === QuestionType.CHECKBOX) {
         const validOptions = question.options?.filter(option => option.value.trim()) || [];
         if (validOptions.length === 0) {
-          alert('Multiple choice and checkbox questions must have at least one valid option');
+          Notify.failure('Multiple choice and checkbox questions must have at least one valid option');
           return;
         }
       }
@@ -91,10 +92,11 @@ export const useFormBuilder = () => {
       }));
 
       await createForm({ title, description, questions: formattedQuestions }).unwrap();
+      Notify.success('Form created successfully!');
       navigate('/');
     } catch (err) {
       console.error('Failed to create form', err);
-      alert('Failed to create form');
+      Notify.failure('Failed to create form');
     }
   };
 
