@@ -12,8 +12,8 @@ export const resolvers: Resolvers = {
       responses.filter((response) => response.formId === formId),
   },
   Mutation: {
-    createForm: (_, { title, description, questions }) => {
-      const newForm = {
+    createForm: (_, { title, description, questions }): Form => {
+      const newForm: Form = {
         id: uuidv4(),
         title,
         description,
@@ -25,13 +25,13 @@ export const resolvers: Resolvers = {
       forms.push(newForm);
       return newForm;
     },
-    submitResponse: (_, { formId, answers }) => {
+    submitResponse: (_, { formId, answers }): Response => {
       const form = forms.find((existingForm) => existingForm.id === formId);
       if (!form) {
         throw new Error('Form not found');
       }
 
-      const newResponse = {
+      const newResponse: Response = {
         id: uuidv4(),
         formId,
         answers: answers.map((answer) => ({

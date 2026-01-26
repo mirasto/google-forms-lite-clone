@@ -3,7 +3,7 @@ import { QuestionType } from '../types';
 import styles from './FormFiller.module.css';
 import { useFormFiller } from '../hooks/useFormFiller';
 
-const FormFiller = () => {
+const FormFiller: React.FC = () => {
   const {
     form,
     isFormLoading,

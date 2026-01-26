@@ -43,3 +43,17 @@ export interface SubmitResponseInput {
   formId: string;
   answers: { questionId: string; values: string[] }[];
 }
+
+export function isQuestionType(value: unknown): value is QuestionType {
+  return typeof value === 'string' && Object.values(QuestionType).includes(value as QuestionType);
+}
+
+export function isQuestion(value: unknown): value is Question {
+  if (typeof value !== 'object' || value === null) return false;
+  const q = value as Question;
+  return (
+    typeof q.id === 'string' &&
+    typeof q.text === 'string' &&
+    isQuestionType(q.type)
+  );
+}

@@ -24,7 +24,7 @@ export const useFormBuilder = () => {
     { tempId: uuidv4(), text: '', type: QuestionType.TEXT, options: [], required: false },
   ]);
 
-  const addQuestion = () => {
+  const addQuestion = (): void => {
     setQuestions([
       ...questions,
       { tempId: uuidv4(), text: '', type: QuestionType.TEXT, options: [], required: false },
@@ -35,26 +35,26 @@ export const useFormBuilder = () => {
     index: number, 
     field: K, 
     value: DraftQuestion[K]
-  ) => {
+  ): void => {
     const newQuestions = [...questions];
     newQuestions[index][field] = value;
     setQuestions(newQuestions);
   };
 
-  const removeQuestion = (index: number) => {
+  const removeQuestion = (index: number): void => {
     const newQuestions = [...questions];
     newQuestions.splice(index, 1);
     setQuestions(newQuestions);
   };
 
-  const addOption = (qIndex: number) => {
+  const addOption = (qIndex: number): void => {
     const newQuestions = [...questions];
     const currentOptions = newQuestions[qIndex].options || [];
     newQuestions[qIndex].options = [...currentOptions, { id: uuidv4(), value: '' }];
     setQuestions(newQuestions);
   };
 
-  const updateOption = (qIndex: number, oIndex: number, value: string) => {
+  const updateOption = (qIndex: number, oIndex: number, value: string): void => {
     const newQuestions = [...questions];
     if (newQuestions[qIndex].options) {
       newQuestions[qIndex].options![oIndex].value = value;
@@ -62,7 +62,7 @@ export const useFormBuilder = () => {
     }
   };
 
-  const removeOption = (qIndex: number, oIndex: number) => {
+  const removeOption = (qIndex: number, oIndex: number): void => {
     const newQuestions = [...questions];
     if (newQuestions[qIndex].options) {
       newQuestions[qIndex].options!.splice(oIndex, 1);
@@ -70,7 +70,7 @@ export const useFormBuilder = () => {
     }
   };
 
-  const saveForm = async () => {
+  const saveForm = async (): Promise<void> => {
     if (!title.trim()) {
       alert('Title is required');
       return;

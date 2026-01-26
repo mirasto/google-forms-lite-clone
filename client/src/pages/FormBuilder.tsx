@@ -2,7 +2,7 @@ import { QuestionType } from '../types';
 import styles from './FormBuilder.module.css';
 import { useFormBuilder } from '../hooks/useFormBuilder';
 
-const FormBuilder = () => {
+const FormBuilder: React.FC = () => {
   const {
     title,
     setTitle,

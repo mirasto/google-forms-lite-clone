@@ -10,7 +10,7 @@ export const useFormFiller = () => {
   const [answers, setAnswers] = useState<Record<string, string[]>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleInputChange = (questionId: string, value: string) => {
+  const handleInputChange = (questionId: string, value: string): void => {
     setAnswers({
       ...answers,
       [questionId]: [value],
@@ -25,9 +25,9 @@ export const useFormFiller = () => {
     }
   };
 
-  const handleCheckboxChange = (questionId: string, value: string, checked: boolean) => {
+  const handleCheckboxChange = (questionId: string, value: string, checked: boolean): void => {
     const currentValues = answers[questionId] || [];
-    let newValues;
+    let newValues: string[];
     if (checked) {
       newValues = [...currentValues, value];
     } else {
@@ -47,7 +47,7 @@ export const useFormFiller = () => {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (): Promise<void> => {
     if (!form) return;
 
  
