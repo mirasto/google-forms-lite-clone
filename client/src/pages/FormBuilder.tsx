@@ -37,14 +37,14 @@ const FormBuilder = () => {
           className={`${styles.input} ${styles.titleInput}`}
           type="text"
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(event) => setTitle(event.target.value)}
           placeholder="Form Title"
         />
         <input
           className={styles.input}
           type="text"
           value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          onChange={(event) => setDescription(event.target.value)}
           placeholder="Form Description"
         />
       </div>
@@ -57,7 +57,7 @@ const FormBuilder = () => {
                 className={styles.input}
                 type="text"
                 value={question.text}
-                onChange={(e) => updateQuestion(questionIndex, 'text', e.target.value)}
+                onChange={(event) => updateQuestion(questionIndex, 'text', event.target.value)}
                 placeholder="Question Text"
               />
              
@@ -66,7 +66,7 @@ const FormBuilder = () => {
               <select
                 className={styles.select}
                 value={question.type}
-                onChange={(e) => updateQuestion(questionIndex, 'type', e.target.value as QuestionType)}
+                onChange={(event) => updateQuestion(questionIndex, 'type', event.target.value as QuestionType)}
               >
                 <option value={QuestionType.TEXT}>Text Answer</option>
                 <option value={QuestionType.MULTIPLE_CHOICE}>Multiple Choice</option>
@@ -98,7 +98,7 @@ const FormBuilder = () => {
                     className={styles.input}
                     type="text"
                     value={option.value}
-                    onChange={(e) => updateOption(questionIndex, optionIndex, e.target.value)}
+                    onChange={(event) => updateOption(questionIndex, optionIndex, event.target.value)}
                     placeholder={`Option ${optionIndex + 1}`}
                   />
                   <button 

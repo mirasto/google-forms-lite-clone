@@ -52,7 +52,7 @@ const FormFiller = () => {
               className={`${styles.input} ${errors[question.id] ? styles.inputError : ''}`}
               type="text"
               placeholder="Your answer"
-              onChange={(e) => handleInputChange(question.id, e.target.value)}
+              onChange={(event) => handleInputChange(question.id, event.target.value)}
             />
           )}
 
@@ -60,7 +60,7 @@ const FormFiller = () => {
             <input
               className={`${styles.input} ${errors[question.id] ? styles.inputError : ''}`}
               type="date"
-              onChange={(e) => handleInputChange(question.id, e.target.value)}
+              onChange={(event) => handleInputChange(question.id, event.target.value)}
             />
           )}
 
@@ -73,7 +73,7 @@ const FormFiller = () => {
                     type="radio"
                     name={question.id}
                     value={optionValue}
-                    onChange={(e) => handleInputChange(question.id, e.target.value)}
+                    onChange={(event) => handleInputChange(question.id, event.target.value)}
                   />
                   {optionValue}
                 </label>
@@ -89,7 +89,7 @@ const FormFiller = () => {
                     className={styles.checkboxInput}
                     type="checkbox"
                     value={optionValue}
-                    onChange={(e) => handleCheckboxChange(question.id, optionValue, e.target.checked)}
+                    onChange={(event) => handleCheckboxChange(question.id, optionValue, event.target.checked)}
                   />
                   {optionValue}
                 </label>

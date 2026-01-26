@@ -1,15 +1,15 @@
 import { v4 as uuidv4 } from 'uuid';
-import { f, r, Resolvers } from './types';
+import { Form, Response, Resolvers } from './types';
 
-const forms = [] as f[];
-const responses = [] as r[];
+const forms = [] as Form[];
+const responses = [] as Response[];
 
 export const resolvers: Resolvers = {
   Query: {
     forms: () => forms,
-    f: (_, { id }) => forms.find((f) => f.id === id),
+    form: (_, { id }) => forms.find((form) => form.id === id),
     responses: (_, { formId }) =>
-      responses.filter((r) => r.formId === formId),
+      responses.filter((response) => response.formId === formId),
   },
   Mutation: {
     createForm: (_, { title, description, questions }) => {
@@ -17,8 +17,8 @@ export const resolvers: Resolvers = {
         id: uuidv4(),
         title,
         description,
-        questions: (questions || []).map((q) => ({
-          ...q,
+        questions: (questions || []).map((question) => ({
+          ...question,
           id: uuidv4(),
         })),
       };
@@ -26,17 +26,17 @@ export const resolvers: Resolvers = {
       return newForm;
     },
     submitResponse: (_, { formId, answers }) => {
-      const f = forms.find((f) => f.id === formId);
-      if (!f) {
-        throw new Error('f not found');
+      const form = forms.find((existingForm) => existingForm.id === formId);
+      if (!form) {
+        throw new Error('Form not found');
       }
 
       const newResponse = {
         id: uuidv4(),
         formId,
-        answers: answers.map((a) => ({
-          questionId: a.questionId,
-          values: a.values,
+        answers: answers.map((answer) => ({
+          questionId: answer.questionId,
+          values: answer.values,
         })),
       };
 

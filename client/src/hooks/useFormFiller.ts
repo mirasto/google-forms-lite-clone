@@ -31,7 +31,7 @@ export const useFormFiller = () => {
     if (checked) {
       newValues = [...currentValues, value];
     } else {
-      newValues = currentValues.filter((v) => v !== value);
+      newValues = currentValues.filter((existingValue) => existingValue !== value);
     }
     setAnswers({
       ...answers,

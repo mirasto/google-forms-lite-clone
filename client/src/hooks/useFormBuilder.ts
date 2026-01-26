@@ -2,14 +2,14 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { useCreateFormMutation } from '../store/api';
-import { QuestionType, type q } from '../types';
+import { QuestionType, type Question } from '../types';
 
 export interface DraftOption {
   id: string;
   value: string;
 }
 
-export interface DraftQuestion extends Omit<q, 'id' | 'options'> {
+export interface DraftQuestion extends Omit<Question, 'id' | 'options'> {
   tempId: string;
   options?: DraftOption[];
 }
@@ -76,18 +76,18 @@ export const useFormBuilder = () => {
       return;
     }
     if (questions.length === 0) {
-      alert('At least one q is required');
+      alert('At least one question is required');
       return;
     }
-    for (const q of questions) {
-      if (!q.text.trim()) {
+    for (const question of questions) {
+      if (!question.text.trim()) {
         alert('All questions must have text');
         return;
       }
-      if (q.type === QuestionType.MULTIPLE_CHOICE || q.type === QuestionType.CHECKBOX) {
-        const validOptions = q.options?.filter(o => o.value.trim()) || [];
+      if (question.type === QuestionType.MULTIPLE_CHOICE || question.type === QuestionType.CHECKBOX) {
+        const validOptions = question.options?.filter(option => option.value.trim()) || [];
         if (validOptions.length === 0) {
-          alert('Multiple choice and checkbox questions must have at least one valid o');
+          alert('Multiple choice and checkbox questions must have at least one valid option');
           return;
         }
       }
@@ -97,7 +97,7 @@ export const useFormBuilder = () => {
 
       const formattedQuestions = questions.map(({ tempId, options, ...rest }) => ({
         ...rest,
-        options: options?.filter(o => o.value.trim()).map(o => o.value) || []
+        options: options?.filter(option => option.value.trim()).map(option => option.value) || []
       }));
       
       await createForm({ title, description, questions: formattedQuestions }).unwrap();
