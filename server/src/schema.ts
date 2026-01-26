@@ -8,11 +8,16 @@ export const typeDefs = gql`
     DATE
   }
 
+  type Option {
+    id: ID!
+    value: String!
+  }
+
   type Question {
     id: ID!
     text: String!
     type: QuestionType!
-    options: [String]
+    options: [Option!]
     required: Boolean
   }
 
@@ -35,10 +40,15 @@ export const typeDefs = gql`
     answers: [Answer!]!
   }
 
+  input OptionInput {
+    id: ID
+    value: String!
+  }
+
   input QuestionInput {
     text: String!
     type: QuestionType!
-    options: [String]
+    options: [OptionInput!]
     required: Boolean
   }
 

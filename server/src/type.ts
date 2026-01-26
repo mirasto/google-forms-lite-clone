@@ -1,3 +1,5 @@
+
+
 export const QuestionType = {
   TEXT: 'TEXT',
   MULTIPLE_CHOICE: 'MULTIPLE_CHOICE',
@@ -7,11 +9,16 @@ export const QuestionType = {
 
 export type QuestionType = (typeof QuestionType)[keyof typeof QuestionType];
 
+export interface Option {
+  id: string;
+  value: string;
+}
+
 export interface Question {
   id: string;
   text: string;
   type: QuestionType;
-  options?: string[];
+  options?: Option[];
   required?: boolean;
 }
 
@@ -36,7 +43,7 @@ export interface Response {
 export interface QuestionInput {
   text: string;
   type: QuestionType;
-  options?: string[];
+  options?: Option[];
   required?: boolean;
 }
 
@@ -44,22 +51,21 @@ export interface AnswerInput {
   questionId: string;
   values: string[];
 }
-
 export type ResolverFn<TResult, TParent, TContext, TArgs> = (
   parent: TParent,
   args: TArgs,
   context: TContext,
-  info: any
+  info: unknown
 ) => Promise<TResult> | TResult;
 
 export interface Resolvers {
   Query: {
-    forms: ResolverFn<Form[], any, any, any>;
-    form: ResolverFn<Form | undefined, any, any, { id: string }>;
-    responses: ResolverFn<Response[], any, any, { formId: string }>;
+    forms: ResolverFn<Form[], unknown, unknown, unknown>;
+    form: ResolverFn<Form | undefined, unknown, unknown, { id: string }>;
+    responses: ResolverFn<Response[], unknown, unknown, { formId: string }>;
   };
   Mutation: {
-    createForm: ResolverFn<Form, any, any, { title: string; description?: string; questions?: QuestionInput[] }>;
-    submitResponse: ResolverFn<Response, any, any, { formId: string; answers: AnswerInput[] }>;
+    createForm: ResolverFn<Form, unknown, unknown, { title: string; description?: string; questions?: QuestionInput[] }>;
+    submitResponse: ResolverFn<Response, unknown, unknown, { formId: string; answers: AnswerInput[] }>;
   };
 }

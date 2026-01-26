@@ -44,6 +44,8 @@ A simplified clone of Google Forms built as a monorepo using React, TypeScript, 
 
 ## Setup & Running
 
+### Development Mode
+
 1.  **Install Dependencies:**
     Run the following command in the root directory to install dependencies for both client and server:
     ```bash
@@ -58,6 +60,26 @@ A simplified clone of Google Forms built as a monorepo using React, TypeScript, 
 
     - **Client:** [http://localhost:5173](http://localhost:5173)
     - **Server:** [http://localhost:4000](http://localhost:4000)
+
+### Building for Production
+
+To build the client application for production deployment:
+
+1.  **Build the Client:**
+    Run the build command from the `client` directory:
+    ```bash
+    cd client
+    npm run build
+    ```
+    This generates a `dist` folder in the `client` directory with the optimized static files.
+
+2.  **Preview Production Build:**
+    You can verify the build locally by running:
+    ```bash
+    npm run preview
+    ```
+
+    *Note: The server currently runs directly from source (using `ts-node`) and does not require a build step.*
 
 ## Running Tests
 

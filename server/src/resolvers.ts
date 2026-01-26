@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Form, Response, Resolvers } from './types';
+import { Form, Response, Resolvers } from './type';
 
 const forms = [] as Form[];
 const responses = [] as Response[];

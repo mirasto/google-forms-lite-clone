@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { resolvers } from './resolvers';
-import { QuestionType } from './types';
+import { QuestionType } from './type';
 
 
 vi.mock('uuid', () => ({
