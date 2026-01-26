@@ -1,42 +1,74 @@
-import { QuestionType } from "../../type";
+import { type Question } from "../../type";
 import styles from "./FormQuestions.module.css";
-import { TextInput, DateInput, ChoiceInput } from "../FormFiller/QuestionsInput";
+import { TextInput, DateInput, ChoiceInput } from "./QuestionsInput";
+import { QuestionType } from "../../type";
 
-// Словник рендерерів (виносимо за межі компонента для чистоти)
-const INPUT_RENDERERS = {
-  [QuestionType.TEXT]: (q, handlers, err) => (
-    <TextInput id={q.id} onChange={handlers.input} hasError={err} />
-  ),
-  [QuestionType.DATE]: (q, handlers, err) => (
-    <DateInput id={q.id} onChange={handlers.input} hasError={err} />
-  ),
-  [QuestionType.MULTIPLE_CHOICE]: (q, handlers, err) => (
-    <ChoiceInput id={q.id} options={q.options} type="radio" onChange={handlers.input} hasError={err} />
-  ),
-  [QuestionType.CHECKBOX]: (q, handlers, err) => (
-    <ChoiceInput id={q.id} options={q.options} type="checkbox" onChange={handlers.checkbox} hasError={err} />
-  ),
-};
+interface FormQuestionsProps {
+  question: Question;
+  errors: Record<string, string>;
+  handleInputChange: (id: string, value: string) => void;
+  handleCheckboxChange: (id: string, value: string, checked: boolean) => void;
+}
 
-const FormQuestions = ({ question, errors, handleInputChange, handleCheckboxChange }) => {
+const FormQuestions = ({
+  question,
+  errors,
+  handleInputChange,
+  handleCheckboxChange
+}: FormQuestionsProps) => {
   const error = errors[question.id];
 
+  const renderInput = () => {
+    switch (question.type) {
+      case QuestionType.TEXT:
+        return <TextInput id={question.id} onChange={handleInputChange} hasError={!!error} />;
+      case QuestionType.DATE:
+        return <DateInput id={question.id} onChange={handleInputChange} hasError={!!error} />;
+      case QuestionType.MULTIPLE_CHOICE:
+        return (
+          <ChoiceInput
+            id={question.id}
+            options={question.options || []}
+            type="RADIO"
+            onChange={handleInputChange}
+            hasError={!!error}
+          />
+        );
+      case QuestionType.CHECKBOX:
+        return (
+          <ChoiceInput
+            id={question.id}
+            options={question.options || []}
+            type="CHECKBOX"
+            onChange={handleCheckboxChange}
+            hasError={!!error}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
-    <div className={styles.questionCard}>
-      {/* Використовуємо question.title або question.text залежно від твого API */}
-      <div className={styles.questionText}>{question.title || question.text}</div>
+    <div
+      id={`question-${question.id}`}
+      className={`${styles.questionCard} ${error ? styles.cardError : ""}`}
+    >
+      <div className={styles.questionHeader}>
+        <span className={styles.questionText}>
+          {question.text}
+          {question.required && <span className={styles.requiredStar}> *</span>}
+        </span>
+      </div>
 
       <div className={styles.inputWrapper}>
-        {INPUT_RENDERERS[question.type]?.(
-          question,
-          { input: handleInputChange, checkbox: handleCheckboxChange },
-          !!error
-        )}
+        {renderInput()}
       </div>
 
       {error && (
-        <div className={styles.error}>
-           <span>{error}</span>
+        <div className={styles.errorMessage} role="alert">
+          <span className={styles.errorIcon}>⚠️</span>
+          {error}
         </div>
       )}
     </div>

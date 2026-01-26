@@ -1,36 +1,65 @@
+import { type Option } from "../../type";
 import styles from "./QuestionsInput.module.css";
 
-// 1. Текстовий інпут
-export const TextInput = ({ id, onChange, hasError }) => (
-  <input
-    className={`${styles.input} ${hasError ? styles.inputError : ""}`}
-    type="text"
-    placeholder="Your answer"
-    onChange={(e) => onChange(id, e.target.value)}
-  />
+interface InputProps {
+  id: string;
+  onChange: (id: string, value: string) => void;
+  hasError: boolean;
+}
+
+export const TextInput = ({ id, onChange, hasError }: InputProps) => (
+  <div className={styles.textInputWrapper}>
+    <input
+      className={`${styles.textInput} ${hasError ? styles.textInputError : ""}`}
+      type="text"
+      placeholder="Your answer"
+      onChange={(e) => onChange(id, e.target.value)}
+      aria-invalid={hasError}
+    />
+    <div className={styles.focusedLine} />
+  </div>
 );
 
-// 2. Вибір дати
-export const DateInput = ({ id, onChange, hasError }) => (
-  <input
-    className={`${styles.input} ${hasError ? styles.inputError : ""}`}
-    type="date"
-    onChange={(e) => onChange(id, e.target.value)}
-  />
+export const DateInput = ({ id, onChange, hasError }: InputProps) => (
+  <div className={styles.dateInputWrapper}>
+    <input
+      className={`${styles.dateInput} ${hasError ? styles.dateInputError : ""}`}
+      type="date"
+      onChange={(e) => onChange(id, e.target.value)}
+      aria-invalid={hasError}
+    />
+  </div>
 );
 
-// 3. Радіо або Чекбокси (спільний компонент)
-export const ChoiceInput = ({ id, options, type, onChange, hasError }) => (
-  <div className={hasError ? styles.optionsErrorWrapper : ""}>
+interface ChoiceProps {
+  id: string;
+  options: Option[];
+  type: "RADIO" | "CHECKBOX";
+  onChange: ((id: string, value: string) => void) | ((id: string, value: string, checked: boolean) => void);
+  hasError: boolean;
+}
+
+export const ChoiceInput = ({ id, options, type, onChange, hasError }: ChoiceProps) => (
+  <div className={styles.optionsList}>
     {options?.map((option) => (
-      <label key={option.id} className={type === 'CHECKBOX' ? styles.checkboxOption : styles.radioOption}>
-        <input
-          type={type === 'CHECKBOX' ? 'checkbox' : 'radio'}
-          name={id}
-          value={option.value}
-          onChange={(e) => onChange(id, option.value, e.target.checked)}
-        />
-        {option.value}
+      <label key={option.id} className={styles.optionItem}>
+        <div className={styles.controlWrapper}>
+          <input
+            type={type === "CHECKBOX" ? "checkbox" : "radio"}
+            name={id}
+            value={option.value}
+            className={styles.realControl}
+            onChange={(e) => {
+              if (type === "CHECKBOX") {
+                (onChange as (id: string, value: string, checked: boolean) => void)(id, option.value, e.target.checked);
+              } else {
+                (onChange as (id: string, value: string) => void)(id, option.value);
+              }
+            }}
+          />
+          <div className={`${styles.fakeControl} ${type === "CHECKBOX" ? styles.fakeCheckbox : styles.fakeRadio} ${hasError ? styles.fakeControlError : ""}`} />
+        </div>
+        <span className={styles.optionText}>{option.value}</span>
       </label>
     ))}
   </div>

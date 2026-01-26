@@ -6,47 +6,93 @@ import FormQuestions from "../../components/FormFiller/FormQuestions";
 const FormFiller = () => {
   const {
     form, isFormLoading, formError, isSubmitting,
-    isSuccess, errors, handleInputChange, 
+    isSuccess, errors, handleInputChange,
     handleCheckboxChange, handleSubmit,
   } = useFormFiller();
 
-  if (isFormLoading) return <div className={styles.loader}>Loading...</div>;
-  if (formError || !form) return <div>Form not found</div>;
+  if (isFormLoading) {
+    return (
+      <div className={styles.centered}>
+        <div className={styles.loader}>Loading form...</div>
+      </div>
+    );
+  }
+
+  if (formError || !form) {
+    return (
+      <div className={styles.centered}>
+        <div className={styles.errorCard}>
+          <h2>Form not found</h2>
+          <p>The form you are looking for does not exist or has been deleted.</p>
+          <Link to="/" className={styles.homeButton}>Go back home</Link>
+        </div>
+      </div>
+    );
+  }
 
   if (isSuccess) {
     return (
       <div className={styles.container}>
         <div className={styles.successCard}>
-          <h1>{form.title}</h1>
-          <p>Your response has been recorded.</p>
-          <Link to="/" className={styles.homeLink}>Go Home</Link>
+          <div className={styles.accentBar} />
+          <h1 className={styles.successTitle}>{form.title}</h1>
+          <p className={styles.successText}>Your response has been recorded.</p>
+          <div className={styles.successActions}>
+            <Link to="/" className={styles.homeLink}>Submit another response</Link>
+          </div>
         </div>
+        <footer className={styles.fillerFooter}>
+          Google Forms Clone
+        </footer>
       </div>
     );
   }
 
   return (
     <div className={styles.container}>
-      <div className={styles.titleCard}>
+      <header className={styles.titleCard}>
+        <div className={styles.accentBar} />
         <h1 className={styles.formTitle}>{form.title}</h1>
-        <p className={styles.formDescription}>{form.description}</p>
-      </div>
+        {form.description && (
+          <p className={styles.formDescription}>{form.description}</p>
+        )}
+        <div className={styles.divider} />
+        <span className={styles.requiredNotice}>* Required</span>
+      </header>
+
+      <form className={styles.questionsList} onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
         {form.questions.map((question) => (
-          <FormQuestions 
+          <FormQuestions
             key={question.id}
             question={question}
             errors={errors}
             handleInputChange={handleInputChange}
-            handleCheckboxChange={handleCheckboxChange} 
+            handleCheckboxChange={handleCheckboxChange}
           />
         ))}
-      <button
-        className={styles.submitButton}
-        onClick={handleSubmit}
-        disabled={isSubmitting}
-      >
-        {isSubmitting ? "Sending..." : "Submit"}
-      </button>
+
+        <div className={styles.formActions}>
+          <button
+            type="submit"
+            className={styles.submitButton}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Submitting..." : "Submit"}
+          </button>
+
+          <button
+            type="button"
+            className={styles.clearButton}
+            onClick={() => window.location.reload()}
+          >
+            Clear form
+          </button>
+        </div>
+      </form>
+
+      <footer className={styles.fillerFooter}>
+        Google Forms Clone
+      </footer>
     </div>
   );
 };

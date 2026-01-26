@@ -1,29 +1,56 @@
-// @ts-nocheck
 import { Link } from 'react-router-dom';
-import Forms from '../../components/Home/FormsCard';
+import FormsCard from '../../components/Home/FormsCard';
 import { useGetFormsQuery } from '../../store/api';
 import styles from './Home.module.css';
 
 const Home = () => {
   const { data: forms, isLoading, error } = useGetFormsQuery();
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading forms</div>;
+  if (isLoading) {
+    return (
+      <div className={styles.centered}>
+        <div className={styles.loader}>Loading forms...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.centered}>
+        <div className={styles.error}>
+          <p>Error loading forms. Please try again later.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <h1>Google Forms Clone</h1>
+      <header className={styles.header}>
+        <h1 className={styles.title}>Your Forms</h1>
         <Link to="/forms/new" className={styles.createButton}>
-          Create New Form
+          <span>+</span> Create New Form
         </Link>
-      </div>
-      <div className={styles.formList}>
-        {forms?.map(form => (
-          <Forms key={form.id} form={form} />
-        ))}
-      </div>
-      {forms?.length === 0 && <p>No forms created yet.</p>}
+      </header>
+
+      <section className={styles.content}>
+        {forms && forms.length > 0 ? (
+          <div className={styles.formGrid}>
+            {forms.map(form => (
+              <FormsCard key={form.id} form={form} />
+            ))}
+          </div>
+        ) : (
+          <div className={styles.emptyState}>
+            <div className={styles.emptyIcon}>📝</div>
+            <h3>No forms yet</h3>
+            <p>Create your first form to start collecting responses.</p>
+            <Link to="/forms/new" className={styles.emptyButton}>
+              Get Started
+            </Link>
+          </div>
+        )}
+      </section>
     </div>
   );
 };

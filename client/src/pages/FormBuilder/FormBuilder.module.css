@@ -1,155 +1,47 @@
+@import '../../index.css';
 
-
-
-
-.inputGroup {
-  margin-bottom: 20px;
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  border-left: 5px solid #673ab7;
-}
-
-.input {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
-}
-
-.titleInput {
-  font-size: 24px;
-  font-weight: bold;
-}
-
-.questionCard {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  margin-bottom: 15px;
-  position: relative;
-}
-
-.questionHeader {
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
   display: flex;
-  /* align-items: center; */
-  gap: 10px;
-  margin-bottom: 15px;
+  flex-direction: column;
+  gap: 20px;
+  min-height: 100vh;
+  background-color: #f0ebf8;
 }
 
-.select {
-  padding: 12px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-}
-
-.optionsList {
-  margin-top: 20px;
-}
-
-.optionRow {
+.questionsList {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 5px;
-}
-
-.addOptionBtn {
-  color: #673ab7;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 5px 0;
-  font-size: 14.4px;
-}
-
-.addOptionBtn:hover {
-  text-decoration: underline;
-}
-
-.removeBtn {
-  color: #d93025;
-  background: none;
-
-  border: none;
-  cursor: pointer;
-  font-size: 30px;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .addQuestionBtn {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   width: 100%;
-  padding: 15px;
+  padding: 16px;
   background: white;
-  border: 1px dashed #ccc;
+  border: 1px dashed #dadce0;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 1rem;
-  color: #555;
-  margin-bottom: 20px;
-}
-
-.addQuestionBtn:hover {
-  background: #f9f9f9;
-}
-
-
-
-.saveButton:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.deleteQuestionBtn {
-  background-color: transparent;
-  color: #d93025;
-  border: none;
-
-  padding: 0;
-  cursor: pointer;
-  font-size: 14px;
-  text-align: left;
-  display: block;
-}
-
-.deleteQuestionBtn:hover {
-  text-decoration: underline;
-}
-
-.questionFooter {
-  display: flex;
-  justify-content: flex-end;
-  border-top: 1px solid #eee;
-  padding-top: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #3c4043;
+  transition: background 0.2s, border-color 0.2s;
   margin-top: 10px;
 }
 
-.requiredLabel {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 14px;
-  color: #555;
-  cursor: pointer;
+.addQuestionBtn:hover {
+  background: #f8f9fa;
+  border-color: #673ab7;
+  color: #673ab7;
 }
 
-.deleteOptionBtn {
-  font-size: 26px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  border-radius: 15px;
-  margin-bottom: 5px;
-}
-
-.deleteOptionBtn:hover {
-  color: red;
-}
-
-.flexOne {
-  flex: 1;
+.addQuestionBtn::before {
+  content: "+";
+  font-size: 20px;
 }

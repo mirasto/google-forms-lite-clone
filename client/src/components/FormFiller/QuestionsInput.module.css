@@ -1,31 +1,140 @@
-
-.radioOption,
-.checkboxOption {
-  display: flex;
-  align-items: center;
-  padding: 8px 0;
-  cursor: pointer;
+/* Текстовий інпут з нижньою лінією */
+.textInputWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
 }
 
-
-
-.input {
+.textInput {
   width: 100%;
-  padding: 10px;
+  padding: 8px 0;
+  border: none;
+  border-bottom: 1px solid #dadce0;
+  font-size: 14px;
+  color: #202124;
+  outline: none;
+  background: transparent;
+  transition: border-bottom-color 0.2s;
+}
+
+.textInput:focus {
+  border-bottom: 2px solid #673ab7;
+  padding-bottom: 7px;
+}
+
+.textInputError {
+  border-bottom-color: #d93025;
+}
+
+/* Дата */
+.dateInput {
+  padding: 8px 12px;
   border: 1px solid #dadce0;
   border-radius: 4px;
   font-size: 14px;
+  outline: none;
 }
 
-.input:focus {
-  outline: 2px solid #673ab7;
-  border-color: transparent;
+.dateInput:focus {
+  border-color: #673ab7;
+  box-shadow: 0 0 0 2px rgba(103, 58, 183, 0.1);
 }
 
-.inputError {
-  border: 1px solid #d93025;
+/* Опції (Радіо та Чекбокси) */
+.optionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.inputError:focus {
-  outline: 2px solid #d93025;
+.optionItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  min-height: 24px;
+}
+
+.controlWrapper {
+  position: relative;
+  width: 20px;
+  height: 20px;
+}
+
+.realControl {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.fakeControl {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #5f6368;
+  box-sizing: border-box;
+  transition: all 0.2s;
+}
+
+.fakeControlError {
+  border-color: #d93025;
+}
+
+
+.fakeRadio {
+  border-radius: 50%;
+}
+
+.fakeCheckbox {
+  border-radius: 2px;
+}
+
+.realControl:checked+.fakeControl {
+  border-color: #673ab7;
+}
+
+.fakeRadio::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 10px;
+  height: 10px;
+  background-color: #673ab7;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+.realControl:checked+.fakeRadio::after {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.fakeCheckbox::after {
+  content: "✔";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  color: white;
+  font-size: 12px;
+  transition: transform 0.2s;
+}
+
+.realControl:checked+.fakeCheckbox {
+  background-color: #673ab7;
+}
+
+.realControl:checked+.fakeCheckbox::after {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.optionText {
+  font-size: 14px;
+  color: #202124;
 }

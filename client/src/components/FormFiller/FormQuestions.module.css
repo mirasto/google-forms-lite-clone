@@ -1,20 +1,42 @@
 .questionCard {
   background: white;
-  border: 1px solid #dadce0;
-  border-radius: 8px;
   padding: 24px;
-  margin-bottom: 12px;
+  border-radius: 8px;
+  border: 1px solid #dadce0;
+  transition: border-color 0.2s;
 }
+
+.cardError {
+  border: 1px solid #d93025;
+}
+
+.questionHeader {
+  margin-bottom: 24px;
+}
+
 .questionText {
   font-size: 16px;
-  margin-bottom: 16px;
-  font-weight: 500;
+  color: #202124;
+  line-height: 24px;
 }
-.error {
+
+.requiredStar {
   color: #d93025;
-  margin-top: 10px;
-  font-size: 12px;
+}
+
+.inputWrapper {
+  margin-top: 8px;
+}
+
+.errorMessage {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
+  margin-top: 12px;
+  color: #d93025;
+  font-size: 12px;
+}
+
+.errorIcon {
+  font-size: 14px;
 }

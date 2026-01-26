@@ -1,76 +1,164 @@
 .container {
   max-width: 640px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 20px 10px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 100vh;
+  background-color: #f0ebf8;
+}
+
+.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0ebf8;
+}
+
+.loader {
+  background: white;
+  padding: 30px 60px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  color: #673ab7;
+  font-weight: 500;
+}
+
+.errorCard {
+  background: white;
+  padding: 40px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .titleCard {
   background: white;
-  border: 1px solid #dadce0;
-  border-radius: 8px;
-  border-top: 10px solid #673ab7;
   padding: 24px;
-  margin-bottom: 12px;
+  border-radius: 8px;
+  border: 1px solid #dadce0;
+  position: relative;
+  overflow: hidden;
 }
 
-
-.radioInput,
-.checkboxInput {
-  margin-right: 12px;
+.accentBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 10px;
+  background-color: #673ab7;
 }
-
 
 .formTitle {
   font-size: 32px;
-  margin-bottom: 10px;
+  font-weight: 400;
+  margin: 8px 0 12px;
+  color: #202124;
 }
 
 .formDescription {
   font-size: 14px;
   color: #202124;
+  margin-bottom: 20px;
+  white-space: pre-wrap;
+}
+
+.divider {
+  height: 1px;
+  background-color: #dadce0;
+  margin: 0 -24px 12px;
+}
+
+.requiredNotice {
+  color: #d93025;
+  font-size: 14px;
+}
+
+.questionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.formActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
 }
 
 .submitButton {
+  padding: 10px 24px;
   background-color: #673ab7;
   color: white;
   border: none;
   border-radius: 4px;
-  padding: 10px 24px;
-  font-size: 14px;
   font-weight: 500;
+  font-size: 14px;
   cursor: pointer;
-  margin-top: 20px;
+  transition: background 0.2s;
 }
 
 .submitButton:hover {
-  background-color: #5f35a6;
+  background-color: #5e35b1;
 }
 
 .submitButton:disabled {
-  background-color: #ccc;
+  background-color: #9aa0a6;
+  cursor: not-allowed;
 }
 
+.clearButton {
+  background: transparent;
+  border: none;
+  color: #673ab7;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 4px;
+}
 
-.success {
-  color: #1e8e3e;
-  font-weight: bold;
-  text-align: center;
-  margin-top: 20px;
+.clearButton:hover {
+  background: rgba(103, 58, 183, 0.05);
+}
+
+.successCard {
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  border: 1px solid #dadce0;
+  position: relative;
+  overflow: hidden;
+}
+
+.successTitle {
+  font-size: 32px;
+  font-weight: 400;
+  margin: 8px 0 12px;
+}
+
+.successText {
+  font-size: 14px;
+  margin-bottom: 24px;
 }
 
 .homeLink {
-  display: block;
-  margin-top: 20px;
-  text-align: center;
-  color: #673ab7;
+  color: #1a73e8;
   text-decoration: none;
+  font-size: 14px;
 }
 
 .homeLink:hover {
   text-decoration: underline;
 }
 
-.requiredAsterisk {
-  color: #d93025;
-  margin-left: 4px;
+.fillerFooter {
+  text-align: center;
+  margin-top: 24px;
+  color: #5f6368;
+  font-size: 12px;
 }

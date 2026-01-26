@@ -1,0 +1,81 @@
+.headerWrapper {
+  margin-bottom: 24px;
+}
+
+.topActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.pageTitle {
+  font-size: 24px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.mainInfoCard {
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.accentBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 10px;
+  background-color: #673ab7;
+}
+
+.titleInput {
+  font-size: 32px;
+  font-weight: 500;
+  border: none;
+  border-bottom: 1px solid transparent;
+  padding: 5px 0;
+  outline: none;
+}
+
+.titleInput:focus {
+  border-bottom: 2px solid #673ab7;
+}
+
+.descriptionInput {
+  font-size: 14px;
+  border: none;
+  border-bottom: 1px solid #ddd;
+  padding: 5px 0;
+  outline: none;
+}
+
+.descriptionInput:focus {
+  border-bottom: 2px solid #673ab7;
+}
+
+.saveButton {
+  background-color: #673ab7;
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.saveButton:hover {
+  background-color: #5e35b1;
+}
+
+.saveButton:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

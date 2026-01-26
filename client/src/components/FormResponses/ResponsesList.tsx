@@ -1,22 +1,28 @@
+import { type Form, type Response } from "../../type";
 import ResponsesAnswer from "./ResponsesAnswer";
+import styles from "./ResponsesList.module.css";
 
-// @ts-nocheck
-const Responses = ({response}) => {
+interface ResponsesListProps {
+  response: Response;
+  form: Form;
+  index: number;
+}
+
+const ResponsesList = ({ response, form, index }: ResponsesListProps) => {
   return (
-    <>
-      {response && response.length > 0 ? (
-        
-        <div key={response.id} className={styles.responseCard}>
-            <div className={styles.responseHeader}>Response #{index + 1}</div>
-              {response.answers.map((answer: Answer) => (
-              <ResponsesAnswer key={answer.questionId} answer={answer} />
-            ))}
-          </div>
-      ) : (
-        <div className={styles.noResponses}>No responses yet.</div>
-      )}
-    </>
+    <div className={styles.responseCard}>
+      <div className={styles.responseHeader}>Response #{index + 1}</div>
+      <div className={styles.answersList}>
+        {response.answers.map((answer) => (
+          <ResponsesAnswer
+            key={answer.questionId}
+            answer={answer}
+            form={form}
+          />
+        ))}
+      </div>
+    </div>
   );
 };
 
-export default Responses;
+export default ResponsesList;

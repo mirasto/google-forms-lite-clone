@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
@@ -8,7 +7,7 @@ import { QuestionType, type DraftQuestion } from '../type';
 export const useFormBuilder = () => {
   const navigate = useNavigate();
   const [createForm, { isLoading }] = useCreateFormMutation();
-  
+
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [questions, setQuestions] = useState<DraftQuestion[]>([
@@ -23,8 +22,8 @@ export const useFormBuilder = () => {
   };
 
   const updateQuestion = <K extends keyof Omit<DraftQuestion, 'tempId' | 'options'>>(
-    index: number, 
-    field: K, 
+    index: number,
+    field: K,
     value: DraftQuestion[K]
   ): void => {
     const newQuestions = [...questions];
@@ -90,7 +89,7 @@ export const useFormBuilder = () => {
         ...rest,
         options: rest.options?.filter(option => option.value.trim()) || []
       }));
-      
+
       await createForm({ title, description, questions: formattedQuestions }).unwrap();
       navigate('/');
     } catch (err) {

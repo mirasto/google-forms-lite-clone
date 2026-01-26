@@ -1,8 +1,6 @@
-// @ts-nocheck
 import { Link, useParams } from 'react-router-dom';
-import Responses from '../../components/FormResponses/ResponsesList';
+import ResponsesList from '../../components/FormResponses/ResponsesList';
 import { useGetFormQuery, useGetResponsesQuery } from '../../store/api';
-import { type Question } from '../../type';
 import styles from './FormResponses.module.css';
 
 const FormResponses = () => {
@@ -10,26 +8,59 @@ const FormResponses = () => {
   const { data: form, isLoading: isFormLoading } = useGetFormQuery(id!);
   const { data: responses, isLoading: isResponsesLoading } = useGetResponsesQuery(id!);
 
- 
+  if (isFormLoading || isResponsesLoading) {
+    return (
+      <div className={styles.centered}>
+        <div className={styles.loader}>Loading responses...</div>
+      </div>
+    );
+  }
 
-  if (isFormLoading || isResponsesLoading) return <div>Loading...</div>;
-  if (!form) return <div>Form not found</div>;
+  if (!form) {
+    return (
+      <div className={styles.centered}>
+        <div className={styles.errorCard}>
+          <h2>Form not found</h2>
+          <Link to="/" className={styles.homeLink}>Back to Home</Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className={styles.container}>
+    <main className={styles.container}>
       <Link to="/" className={styles.backLink}>
         &larr; Back to Forms
       </Link>
-      <div className={styles.header}>
-        <h1 className={styles.title}>{form.title} - Responses</h1>
-        <p className={styles.subtitle}>{responses?.length || 0} responses</p>
-      </div>
-      {responses.map((response) => (
-        <ResponsesList
-          key={response.id}
-          response={response}
-        />))}
-    </div>
+
+      <header className={styles.header}>
+        <div className={styles.accentBar} />
+        <h1 className={styles.title}>{form.title}</h1>
+        <div className={styles.statsRow}>
+          <span className={styles.responseCount}>
+            {responses?.length || 0} responses
+          </span>
+        </div>
+      </header>
+
+      <section className={styles.responsesSection}>
+        {responses && responses.length > 0 ? (
+          responses.map((response, index) => (
+            <ResponsesList
+              key={response.id}
+              response={response}
+              form={form}
+              index={index}
+            />
+          ))
+        ) : (
+          <div className={styles.noResponses}>
+            <div className={styles.emptyIcon}> Empty 📊</div>
+            <p>No responses yet for this form.</p>
+          </div>
+        )}
+      </section>
+    </main>
   );
 };
 

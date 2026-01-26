@@ -1,0 +1,75 @@
+.formCard {
+  background: white;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.formCard:hover {
+  border-color: #673ab7;
+  box-shadow: 0 1px 3px 0 rgba(60, 64, 67, 0.301), 0 4px 8px 3px rgba(60, 64, 67, 0.149);
+}
+
+.thumbnail {
+  height: 120px;
+  background-color: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #dadce0;
+}
+
+.formIcon {
+  font-size: 32px;
+}
+
+.cardContent {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.formTitle {
+  margin: 0 0 4px 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #202124;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.formDescription {
+  margin: 0 0 16px 0;
+  font-size: 0.875rem;
+  color: #5f6368;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.5em;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.actionLink {
+  color: #673ab7;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.actionLink:hover {
+  color: #5e35b1;
+  text-decoration: underline;
+}

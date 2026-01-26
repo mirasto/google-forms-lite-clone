@@ -1,0 +1,87 @@
+.questionCard {
+    background: white;
+    padding: 24px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    margin-bottom: 15px;
+    position: relative;
+    transition: box-shadow 0.3s ease;
+}
+
+.questionCard:focus-within {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-left: 6px solid #4285f4;
+}
+
+.questionHeader {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    align-items: flex-start;
+}
+
+.input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid transparent;
+    background: #f8f9fa;
+    border-radius: 4px;
+    font-size: 16px;
+    outline: none;
+}
+
+.input:focus {
+    background: #eee;
+    border-bottom: 2px solid #673ab7;
+}
+
+.select {
+    padding: 12px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background-color: white;
+    outline: none;
+    min-width: 150px;
+}
+
+.deleteBtn {
+    background-color: transparent;
+    color: #5f6368;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.deleteBtn:hover {
+    background: #f1f3f4;
+    color: #d93025;
+}
+
+.questionFooter {
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+    margin-top: 15px;
+}
+
+.requiredLabel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #5f6368;
+    cursor: pointer;
+}
+
+.requiredLabel input {
+    width: 16px;
+    height: 16px;
+    accent-color: #673ab7;
+}

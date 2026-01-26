@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useGetFormQuery, useSubmitResponseMutation } from '../store/api';
@@ -16,7 +15,7 @@ export const useFormFiller = () => {
       ...answers,
       [questionId]: [value],
     });
-    
+
     if (errors[questionId]) {
       setErrors((prev) => {
         const newErrors = { ...prev };
@@ -38,7 +37,7 @@ export const useFormFiller = () => {
       ...answers,
       [questionId]: newValues,
     });
-    
+
     if (errors[questionId]) {
       setErrors((prev) => {
         const newErrors = { ...prev };
@@ -51,13 +50,26 @@ export const useFormFiller = () => {
   const handleSubmit = async (): Promise<void> => {
     if (!form) return;
 
- 
     const newErrors: Record<string, string> = {};
-    let isValid = true;
+    let hasErrors = false;
 
-    if (!isValid) {
+    // Валідація обов'язкових полів
+    form.questions.forEach((question) => {
+      const answer = answers[question.id];
+      if (question.required && (!answer || answer.length === 0 || !answer[0].trim())) {
+        newErrors[question.id] = 'This is a required question';
+        hasErrors = true;
+      }
+    });
+
+    if (hasErrors) {
       setErrors(newErrors);
-      alert('Please fill in all required fields');
+      // Скролимо до першої помилки
+      const firstErrorId = Object.keys(newErrors)[0];
+      const element = document.getElementById(`question-${firstErrorId}`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
       return;
     }
 
@@ -73,7 +85,7 @@ export const useFormFiller = () => {
       }).unwrap();
     } catch (err) {
       console.error('Failed to submit response', err);
-      alert('Failed to submit response');
+      alert('Failed to submit response. Please check your connection.');
     }
   };
 
