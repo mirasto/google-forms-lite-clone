@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
-import { QuestionType, type Props } from '../type';
+import { QuestionType } from '../type';
 import styles from './FormFiller.module.css';
 import { useFormFiller } from '../hooks/useFormFiller';
 
-const FormFiller = (props: Props) => {
+const FormFiller = () => {
   const {
     form,
     isFormLoading,
