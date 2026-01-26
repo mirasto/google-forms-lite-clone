@@ -26,7 +26,7 @@ A simplified clone of Google Forms built as a monorepo using React, TypeScript, 
 - **Framework:** React (Vite)
 - **Language:** TypeScript
 - **State Management:** Redux Toolkit (RTK Query)
-- **Styling:** CSS Modules (BEM/Kebab-case naming convention)
+- **Styling:** CSS Modules
 - **Routing:** React Router
 - **Testing:** Vitest, React Testing Library
 
