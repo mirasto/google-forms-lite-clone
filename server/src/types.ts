@@ -1,4 +1,7 @@
 import type { GraphQLResolveInfo } from 'graphql';
+import type { IResolvers } from '@graphql-tools/utils';
+import type { InMemoryStore } from './store.js';
+import type { PubSub } from 'graphql-subscriptions';
 import type { 
   Form, 
   Response, 
@@ -11,6 +14,8 @@ export * from '@forms/shared';
 
 export interface Context {
   userId?: string;
+  store: InMemoryStore;
+  pubsub: PubSub;
 }
 
 export type ResolverFn<TResult, TParent = {}, TArgs = {}> = (
@@ -21,7 +26,7 @@ export type ResolverFn<TResult, TParent = {}, TArgs = {}> = (
 ) => Promise<TResult> | TResult;
 
 
-export interface Resolvers {
+export interface Resolvers extends IResolvers<any, Context> {
   Query: {
     forms: ResolverFn<Form[]>;
     form: ResolverFn<Form | null, {}, { id: string }>;
@@ -31,8 +36,10 @@ export interface Resolvers {
     createForm: ResolverFn<Form, {}, CreateFormInput>;
     submitResponse: ResolverFn<Response, {}, SubmitResponseInput>;
   };
-  Answer?: {
-    value: ResolverFn<string | null, Answer>;
+  Subscription: {
+    responseAdded: {
+      subscribe: ResolverFn<AsyncIterator<Response>, {}, { formId: string }>;
+      resolve?: ResolverFn<Response, Response, { formId: string }>;
+    };
   };
-  [key: string]: unknown;
 }

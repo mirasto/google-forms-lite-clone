@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { QuestionType } from './types';
+import { QuestionType } from './types.js';
 
 export const createFormSchema = z.object({
   title: z.string().trim().min(1, 'Title is required'),
@@ -19,11 +19,11 @@ export const createFormSchema = z.object({
     required: z.boolean()
   })).min(1, 'Form must have at least one question')
 }).superRefine((data, ctx) => {
-  data.questions.forEach((q, index) => {
-    if ((q.type === QuestionType.MULTIPLE_CHOICE || q.type === QuestionType.CHECKBOX) && (!q.options || q.options.length === 0)) {
+  data.questions.forEach((question, index) => {
+    if ((question.type === QuestionType.MULTIPLE_CHOICE || question.type === QuestionType.CHECKBOX) && (!question.options || question.options.length === 0)) {
       ctx.addIssue({
         code: 'custom',
-        message: `Question "${q.text}" must have options`,
+        message: `Question "${question.text}" must have options`,
         path: ['questions', index, 'options']
       });
     }

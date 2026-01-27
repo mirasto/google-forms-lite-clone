@@ -1,14 +1,13 @@
-import type { IResolvers } from '@graphql-tools/utils';
-import type { Context, Form, Response, CreateFormInput, SubmitResponseInput, Answer } from './types';
-import * as factories from './factories';
+import type { Resolvers } from './types.js';
+import type { Context, CreateFormInput, SubmitResponseInput, Answer } from './types.js';
+import * as factories from './factories.js';
+import { createFormSchema, submitResponseSchema } from './validation.js';
 import { GraphQLError } from 'graphql';
-import { createFormSchema, submitResponseSchema } from './validation';
-import { z, ZodError, type ZodTypeAny } from 'zod';
+import { z, ZodError, type ZodType } from 'zod';
 
-const storedForms: Form[] = [];
-const storedResponses: Response[] = [];
+import { withFilter } from 'graphql-subscriptions';
 
-const validate = <S extends ZodTypeAny>(schema: S, data: unknown): z.infer<S> => {
+const validate = <S extends ZodType>(schema: S, data: unknown): z.infer<S> => {
   try {
     return schema.parse(data);
   } catch (error) {
@@ -20,53 +19,94 @@ const validate = <S extends ZodTypeAny>(schema: S, data: unknown): z.infer<S> =>
   }
 };
 
-export const resolvers: IResolvers<unknown, Context> = {
+export const resolvers: Resolvers = {
   Query: {
-    forms: () => storedForms,
-    form: (_parent, { id }) => storedForms.find(f => f.id === id) ?? null,
-    responses: (_parent, { formId }) => storedResponses.filter(r => r.formId === formId),
+    forms: (_parent, _args, { store }) => store.getForms(),
+    form: (_parent, { id }, { store }) => store.getForm(id) ?? null,
+    responses: (_parent, { formId }, { store }) => store.getResponses(formId),
   },
 
   Mutation: {
-    createForm: (_parent, args: CreateFormInput) => {
+    createForm: (_parent, args, { store }) => {
       const validatedArgs = validate(createFormSchema, args);
-      const { title, description, questions } = validatedArgs as unknown as CreateFormInput;
+      const { title, description, questions } = validatedArgs;
+      // Zod schema ensures strict types for questions, map explicitly if needed to avoid 'as any'
+      // If questions structure matches factories expectation exactly, no cast needed.
+      // But Zod optional fields are sometimes incompatible with strict types if not handled.
+      // We map to ensure undefined/null consistency
+      const mappedQuestions = questions.map(question => ({
+        ...question,
+        options: question.options?.map(option => ({
+          ...option,
+          id: option.id ?? undefined // ensure null becomes undefined if factory expects optional
+        }))
+      })) as any; // Cast to any because Zod output types and Shared types have subtle differences (e.g. null vs undefined) that are safe at runtime but annoying in TS.
+                  // We validated structure with Zod already.
 
-      const newForm = factories.createForm(title, description, questions);
-      storedForms.push(newForm);
+      const newForm = factories.createForm(title, description, mappedQuestions); 
+      
+      store.addForm(newForm);
       return newForm;
     },
 
-    submitResponse: (_parent, args: SubmitResponseInput) => {
+    submitResponse: (_parent, args, context) => {
+      const { store } = context;
       const validatedArgs = validate(submitResponseSchema, args);
-      const { formId, answers } = validatedArgs as unknown as SubmitResponseInput;
+      const { formId, answers } = validatedArgs;
 
-      const targetForm = storedForms.find(f => f.id === formId);
+      const targetForm = store.getForm(formId);
       if (!targetForm) throw new GraphQLError('Form not found', { extensions: { code: 'NOT_FOUND' } });
 
-      const answersMap = new Map(answers.map(a => [a.questionId, a]));
+      const rawAnswersMap = new Map(answers.map(answer => [answer.questionId, answer]));
+      const validAnswers: Answer[] = [];
+      targetForm.questions.forEach((question) => {
+        const answerInput = rawAnswersMap.get(question.id);
+        const hasValue = answerInput?.values.some(v => v.trim() !== '') ?? false;
 
-      targetForm.questions.forEach((q) => {
-        const answer = answersMap.get(q.id);
-        const hasValue = answer?.values.some(v => v.trim() !== '') ?? false;
+        if (question.required && !hasValue) {
+          throw new GraphQLError(`Question "${question.text}" is required`, { extensions: { code: 'BAD_USER_INPUT', field: question.id } });
+        }
 
-        if (q.required && !hasValue) throw new GraphQLError(`Question "${q.text}" is required`, { extensions: { code: 'BAD_USER_INPUT', field: q.id } });
 
-        if (hasValue && (q.type === 'MULTIPLE_CHOICE' || q.type === 'CHECKBOX') && q.options && answer) {
-          const allowed = new Set(q.options.map(o => o.value));
-          answer.values.forEach(v => {
-            if (!allowed.has(v)) throw new GraphQLError(`Invalid option "${v}" for question "${q.text}"`, { extensions: { code: 'BAD_USER_INPUT' } });
+        if (hasValue && (question.type === 'MULTIPLE_CHOICE' || question.type === 'CHECKBOX') && question.options && answerInput) {
+          const allowed = new Set(question.options.map(option => option.value));
+          answerInput.values.forEach(v => {
+            if (!allowed.has(v)) {
+              throw new GraphQLError(`Invalid option "${v}" for question "${question.text}"`, { extensions: { code: 'BAD_USER_INPUT' } });
+            }
+          });
+        }
+
+
+        if (answerInput) {
+          validAnswers.push({
+            questionId: question.id,
+            values: answerInput.values
           });
         }
       });
 
-      const newResponse = factories.createResponse(formId, answers);
-      storedResponses.push(newResponse);
+      const newResponse = factories.createResponse(formId, validAnswers);
+      store.addResponse(newResponse);
+      
+      // Publish event
+      context.pubsub.publish('RESPONSE_ADDED', { responseAdded: newResponse });
+      
       return newResponse;
     },
   },
 
-  Answer: {
-    value: (parent: Answer) => parent.values[0] ?? null,
+  Subscription: {
+    responseAdded: {
+      subscribe: withFilter(
+        (_parent: any, _args: any, context: any) => {
+          const { pubsub } = context as Context;
+          return (pubsub as any).asyncIterator(['RESPONSE_ADDED']);
+        },
+        (payload: any, variables: any) => {
+          return payload.responseAdded.formId === variables.formId;
+        }
+      ),
+    },
   },
 };

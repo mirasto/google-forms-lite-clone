@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from 'graphql-tag';
 
 export const typeDefs = gql`
   enum QuestionType {
@@ -30,7 +30,6 @@ export const typeDefs = gql`
 
   type Answer {
     questionId: ID!
-    value: String
     values: [String!]!
   }
 
@@ -66,5 +65,9 @@ export const typeDefs = gql`
   type Mutation {
     createForm(title: String!, description: String, questions: [QuestionInput!]!): Form!
     submitResponse(formId: ID!, answers: [AnswerInput!]!): Response!
+  }
+
+  type Subscription {
+    responseAdded(formId: ID!): Response!
   }
 `;
