@@ -44,7 +44,7 @@ describe('Resolvers', () => {
 
       const form = await resolvers.Mutation.createForm(null, {
         title: 'Response Test Form',
-        questions: [{ text: 'Q1', type: QuestionType.TEXT }],
+        questions: [{ text: 'Q1', type: QuestionType.TEXT, required: false }],
       }, null, null);
 
       const answerInput = {

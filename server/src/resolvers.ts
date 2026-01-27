@@ -1,10 +1,24 @@
 import type { IResolvers } from '@graphql-tools/utils';
-import type { Context, Form, Response, CreateFormInput, SubmitResponseInput, Resolvers as MyResolvers, Answer } from './types';
+import type { Context, Form, Response, CreateFormInput, SubmitResponseInput, Answer } from './types';
 import * as factories from './factories';
 import { GraphQLError } from 'graphql';
+import { createFormSchema, submitResponseSchema } from './validation';
+import { z, ZodError, type ZodTypeAny } from 'zod';
 
 const storedForms: Form[] = [];
 const storedResponses: Response[] = [];
+
+const validate = <S extends ZodTypeAny>(schema: S, data: unknown): z.infer<S> => {
+  try {
+    return schema.parse(data);
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const issues = error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ');
+      throw new GraphQLError(issues, { extensions: { code: 'BAD_USER_INPUT' } });
+    }
+    throw error;
+  }
+};
 
 export const resolvers: IResolvers<unknown, Context> = {
   Query: {
@@ -14,23 +28,19 @@ export const resolvers: IResolvers<unknown, Context> = {
   },
 
   Mutation: {
-    createForm: (_parent, { title, description, questions }: CreateFormInput) => {
-      if (!title?.trim()) throw new GraphQLError('Title is required', { extensions: { code: 'BAD_USER_INPUT' } });
-      if (!questions || questions.length === 0) throw new GraphQLError('Form must have at least one question', { extensions: { code: 'BAD_USER_INPUT' } });
-
-      questions.forEach((q, idx) => {
-        if (!q.text?.trim()) throw new GraphQLError(`Question ${idx + 1}: text required`, { extensions: { code: 'BAD_USER_INPUT' } });
-        if ((q.type === 'MULTIPLE_CHOICE' || q.type === 'CHECKBOX') && (!q.options || q.options.length === 0)) {
-          throw new GraphQLError(`Question "${q.text}" must have options`, { extensions: { code: 'BAD_USER_INPUT' } });
-        }
-      });
+    createForm: (_parent, args: CreateFormInput) => {
+      const validatedArgs = validate(createFormSchema, args);
+      const { title, description, questions } = validatedArgs as unknown as CreateFormInput;
 
       const newForm = factories.createForm(title, description, questions);
       storedForms.push(newForm);
       return newForm;
     },
 
-    submitResponse: (_parent, { formId, answers }: SubmitResponseInput) => {
+    submitResponse: (_parent, args: SubmitResponseInput) => {
+      const validatedArgs = validate(submitResponseSchema, args);
+      const { formId, answers } = validatedArgs as unknown as SubmitResponseInput;
+
       const targetForm = storedForms.find(f => f.id === formId);
       if (!targetForm) throw new GraphQLError('Form not found', { extensions: { code: 'NOT_FOUND' } });
 
