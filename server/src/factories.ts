@@ -31,6 +31,7 @@ export const createForm = (
       id: option.id || uuidv4() 
     })) ?? undefined,
   })),
+  createdAt: new Date().toISOString(),
 });
 
 /**
@@ -50,4 +51,5 @@ export const createResponse = (
     questionId: answer.questionId,
     values: answer.values ?? [],
   })),
+  createdAt: new Date().toISOString(),
 });

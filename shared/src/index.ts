@@ -23,8 +23,9 @@ export interface Question {
 export interface Form {
   id: string;
   title: string;
-  description?: string;
+  description?: string | null;
   questions: Question[];
+  createdAt: string; // ISO 8601 date string
 }
 
 export interface Answer {
@@ -36,6 +37,7 @@ export interface Response {
   id: string;
   formId: string;
   answers: Answer[];
+  createdAt: string; // ISO 8601 date string
 }
 
 export interface QuestionInput {
@@ -47,7 +49,7 @@ export interface QuestionInput {
 
 export interface CreateFormInput {
   title: string;
-  description?: string;
+  description?: string | null;
   questions: QuestionInput[];
 }
 

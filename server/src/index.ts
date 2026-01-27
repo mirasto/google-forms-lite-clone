@@ -7,12 +7,11 @@ import { makeExecutableSchema } from '@graphql-tools/schema';
 import { PubSub } from 'graphql-subscriptions';
 import express from 'express';
 import cors from 'cors';
-import bodyParser from 'body-parser';
 import { GraphQLError, GraphQLFormattedError } from 'graphql';
 
 import { typeDefs } from './schema.js';
 import { resolvers } from './resolvers.js';
-import type { Context } from './types.js';
+import type { Context, PubSubWithAsyncIterator } from './types.js';
 import { InMemoryStore } from './store.js';
 
 // Configuration
@@ -51,7 +50,7 @@ async function bootstrap() {
   try {
     // 1. Initialize core dependencies
     const store = new InMemoryStore();
-    const pubsub = new PubSub();
+    const pubsub = new PubSub() as unknown as PubSubWithAsyncIterator;
     const app = express();
     const httpServer = createServer(app);
 
@@ -100,10 +99,19 @@ async function bootstrap() {
     await server.start();
 
     // 5. Setup Express Middleware
+    app.use(cors<cors.CorsRequest>());
+    app.use(express.json());
+
+    // Ensure req.body is set (Apollo Server 4 requirement)
+    app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+      if (!req.body) {
+        req.body = {};
+      }
+      next();
+    });
+    
     app.use(
       '/graphql',
-      cors<cors.CorsRequest>(),
-      bodyParser.json(),
       expressMiddleware(server, {
         context: async () => ({
           userId: undefined,
@@ -113,10 +121,15 @@ async function bootstrap() {
       }) as unknown as express.RequestHandler
     );
 
+    // Add root route for convenience
+    app.get('/', (req, res) => {
+      res.redirect('/graphql');
+    });
+
     // 6. Start the HTTP Server
     httpServer.listen(PORT, () => {
-      console.log(`🚀 Server ready at http://localhost:${PORT}/graphql`);
-      console.log(`📡 Subscriptions ready at ws://localhost:${PORT}/graphql`);
+      console.log(`Server ready at http://localhost:${PORT}/graphql`);
+      console.log(`Subscriptions ready at ws://localhost:${PORT}/graphql`);
     });
 
   } catch (error) {

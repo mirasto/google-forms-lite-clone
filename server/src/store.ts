@@ -12,7 +12,7 @@ export class InMemoryStore {
   }
 
   getForm(id: string): Form | undefined {
-    return this.forms.find(f => f.id === id);
+    return this.forms.find(form => form.id === id);
   }
 
   addForm(form: Form): void {
@@ -20,7 +20,7 @@ export class InMemoryStore {
   }
 
   getResponses(formId: string): Response[] {
-    return this.responses.filter(r => r.formId === formId);
+    return this.responses.filter(response => response.formId === formId);
   }
 
   addResponse(response: Response): void {
