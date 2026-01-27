@@ -1,10 +1,10 @@
-import { type Question } from "@types";
+import { type Question, QuestionType } from "@types";
 import styles from "./FormQuestions.module.css";
 import { TextInput, DateInput, ChoiceInput } from "./QuestionsInput";
-import { QuestionType } from "@types";
 
 interface FormQuestionsProps {
   question: Question;
+  answers: string[];
   errors: Record<string, string>;
   handleInputChange: (id: string, value: string) => void;
   handleCheckboxChange: (id: string, value: string, checked: boolean) => void;
@@ -12,6 +12,7 @@ interface FormQuestionsProps {
 
 const FormQuestions = ({
   question,
+  answers,
   errors,
   handleInputChange,
   handleCheckboxChange
@@ -21,14 +22,15 @@ const FormQuestions = ({
   const renderInput = () => {
     switch (question.type) {
       case QuestionType.TEXT:
-        return <TextInput id={question.id} onChange={handleInputChange} hasError={!!error} />;
+        return <TextInput id={question.id} value={answers[0] || ""} onChange={handleInputChange} hasError={!!error} />;
       case QuestionType.DATE:
-        return <DateInput id={question.id} onChange={handleInputChange} hasError={!!error} />;
+        return <DateInput id={question.id} value={answers[0] || ""} onChange={handleInputChange} hasError={!!error} />;
       case QuestionType.MULTIPLE_CHOICE:
         return (
           <ChoiceInput
             id={question.id}
             options={question.options || []}
+            selectedValues={answers}
             type="RADIO"
             onChange={handleInputChange}
             hasError={!!error}
@@ -39,6 +41,7 @@ const FormQuestions = ({
           <ChoiceInput
             id={question.id}
             options={question.options || []}
+            selectedValues={answers}
             type="CHECKBOX"
             onChange={handleCheckboxChange}
             hasError={!!error}

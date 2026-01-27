@@ -20,6 +20,14 @@ const FormBuilder = () => {
     isLoading,
   } = useFormBuilder();
 
+  const actions = {
+    updateQuestion,
+    removeQuestion,
+    addOption,
+    updateOption,
+    removeOption,
+  };
+
   return (
     <main className={styles.container}>
       <BuilderHeader
@@ -37,9 +45,7 @@ const FormBuilder = () => {
             key={question.tempId}
             index={index}
             question={question}
-            updateQuestion={updateQuestion}
-            removeQuestion={removeQuestion}
-            optionMethods={{ addOption, updateOption, removeOption }}
+            actions={actions}
           />
         ))}
       </div>

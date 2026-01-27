@@ -13,13 +13,12 @@ export const useFormFiller = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const clearError = (questionId: string) => {
-    if (errors[questionId]) {
-      setErrors((prev) => {
-        const newErrors = { ...prev };
-        delete newErrors[questionId];
-        return newErrors;
-      });
-    }
+    setErrors((prev) => {
+      if (!prev[questionId]) return prev;
+      const newErrors = { ...prev };
+      delete newErrors[questionId];
+      return newErrors;
+    });
   };
 
   const handleInputChange = (questionId: string, value: string): void => {
@@ -55,9 +54,13 @@ export const useFormFiller = () => {
 
     form.questions.forEach((question) => {
       const answer = answers[question.id];
-      if (question.required && (!answer || answer.length === 0 || !answer[0].trim())) {
-        newErrors[question.id] = VALIDATION_MESSAGES.REQUIRED_FIELD;
-        hasErrors = true;
+      if (question.required) {
+        const isValid = answer && answer.length > 0 && answer.some(val => val.trim() !== '');
+        
+        if (!isValid) {
+          newErrors[question.id] = VALIDATION_MESSAGES.REQUIRED_FIELD;
+          hasErrors = true;
+        }
       }
     });
 
@@ -81,7 +84,6 @@ export const useFormFiller = () => {
         formId: form.id,
         answers: answersList,
       }).unwrap();
-      Notify.success(API_MESSAGES.SUBMIT_SUCCESS);
     } catch (err) {
       console.error('Failed to submit response', err);
       Notify.failure(API_MESSAGES.SUBMIT_ERROR);

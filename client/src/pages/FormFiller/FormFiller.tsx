@@ -6,7 +6,7 @@ import FormQuestions from "../../components/FormFiller/FormQuestions";
 const FormFiller = () => {
   const {
     form, isFormLoading, formError, isSubmitting,
-    isSuccess, errors, handleInputChange,
+    isSuccess, answers, errors, handleInputChange,
     handleCheckboxChange, handleSubmit,
   } = useFormFiller();
 
@@ -62,6 +62,7 @@ const FormFiller = () => {
           <FormQuestions
             key={question.id}
             question={question}
+            answers={answers[question.id] || []}
             errors={errors}
             handleInputChange={handleInputChange}
             handleCheckboxChange={handleCheckboxChange}

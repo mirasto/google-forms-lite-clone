@@ -9,6 +9,5 @@ export const VALIDATION_MESSAGES = {
 export const API_MESSAGES = {
     SUBMIT_SUCCESS: "Response submitted successfully!",
     SUBMIT_ERROR: "Failed to submit response. Please check your connection.",
-    CREATE_SUCCESS: "Form created successfully!",
     CREATE_ERROR: "Failed to create form",
 } as const;

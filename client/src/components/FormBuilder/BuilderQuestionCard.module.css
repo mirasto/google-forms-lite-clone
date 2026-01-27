@@ -7,11 +7,6 @@
     position: relative;
 }
 
-/* .questionCard:focus-within {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border-left: 6px solid #4285f4;
-} */
-
 .questionHeader {
     display: flex;
     gap: 15px;
@@ -69,6 +64,12 @@
     margin-top: 15px;
 }
 
+.footerRight {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
 .requiredLabel {
     display: flex;
     align-items: center;
@@ -82,4 +83,47 @@
     width: 16px;
     height: 16px;
     accent-color: #673ab7;
+}
+
+/* React Select Overrides */
+:global(.form-select__control) {
+    min-width: 200px;
+    padding: 2px;
+    border-radius: 4px;
+    border-color: var(--color-border);
+    box-shadow: none;
+    background-color: var(--color-white);
+}
+
+:global(.form-select__control:hover) {
+    border-color: var(--color-border-hover) ;
+}
+
+:global(.form-select__control--is-focused) {
+    border-color: var(--color-border-hover);
+    box-shadow: none;
+}
+
+:global(.form-select__menu) {
+    z-index: 10;
+    background-color: var(--color-white);
+}
+
+:global(.form-select__option) {
+    cursor: pointer;
+    background-color: var(--color-white);
+    color: var(--color-text);
+}
+
+:global(.form-select__option--is-focused) {
+    background-color: var(--color-bg-hover);
+}
+
+:global(.form-select__option--is-selected) {
+    background-color: var(--color-primary-bg);
+    color: var(--color-primary);
+}
+
+:global(.form-select__option:active) {
+    background-color: var(--color-primary-bg);
 }

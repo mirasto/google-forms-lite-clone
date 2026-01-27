@@ -18,4 +18,7 @@ export default defineConfig({
       '@types': fileURLToPath(new URL('./src/types.ts', import.meta.url)),
     },
   },
+  optimizeDeps: {
+    include: ['@forms/shared'],
+  },
 })

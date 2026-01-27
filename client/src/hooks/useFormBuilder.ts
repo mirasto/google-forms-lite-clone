@@ -78,7 +78,6 @@ export const useFormBuilder = () => {
     try {
       const formattedQuestions = formatQuestionsForSubmission(questions);
       await createForm({ title, description, questions: formattedQuestions }).unwrap();
-      Notify.success(API_MESSAGES.CREATE_SUCCESS);
       navigate('/');
     } catch (err) {
       console.error('Failed to create form', err);

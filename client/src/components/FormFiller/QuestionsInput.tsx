@@ -3,16 +3,18 @@ import styles from "./QuestionsInput.module.css";
 
 interface InputProps {
   id: string;
+  value: string;
   onChange: (id: string, value: string) => void;
   hasError: boolean;
 }
 
-export const TextInput = ({ id, onChange, hasError }: InputProps) => (
+export const TextInput = ({ id, value, onChange, hasError }: InputProps) => (
   <div className={styles.textInputWrapper}>
     <input
       className={`${styles.textInput} ${hasError ? styles.textInputError : ""}`}
       type="text"
       placeholder="Your answer"
+      value={value}
       onChange={(e) => onChange(id, e.target.value)}
       aria-invalid={hasError}
     />
@@ -20,11 +22,12 @@ export const TextInput = ({ id, onChange, hasError }: InputProps) => (
   </div>
 );
 
-export const DateInput = ({ id, onChange, hasError }: InputProps) => (
+export const DateInput = ({ id, value, onChange, hasError }: InputProps) => (
   <div className={styles.dateInputWrapper}>
     <input
       className={`${styles.dateInput} ${hasError ? styles.dateInputError : ""}`}
       type="date"
+      value={value}
       onChange={(e) => onChange(id, e.target.value)}
       aria-invalid={hasError}
     />
@@ -34,12 +37,13 @@ export const DateInput = ({ id, onChange, hasError }: InputProps) => (
 interface ChoiceProps {
   id: string;
   options: Option[];
+  selectedValues: string[];
   type: "RADIO" | "CHECKBOX";
   onChange: ((id: string, value: string) => void) | ((id: string, value: string, checked: boolean) => void);
   hasError: boolean;
 }
 
-export const ChoiceInput = ({ id, options, type, onChange, hasError }: ChoiceProps) => (
+export const ChoiceInput = ({ id, options, selectedValues, type, onChange, hasError }: ChoiceProps) => (
   <div className={styles.optionsList}>
     {options?.map((option) => (
       <label key={option.id} className={styles.optionItem}>
@@ -48,6 +52,7 @@ export const ChoiceInput = ({ id, options, type, onChange, hasError }: ChoicePro
             type={type === "CHECKBOX" ? "checkbox" : "radio"}
             name={id}
             value={option.value}
+            checked={selectedValues.includes(option.value)}
             className={styles.realControl}
             onChange={(e) => {
               if (type === "CHECKBOX") {

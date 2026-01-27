@@ -1,82 +1,44 @@
 import { type ChangeEvent } from "react";
-import Select, { type SingleValue, type StylesConfig } from "react-select";
+import Select, { type SingleValue } from "react-select";
 import { QuestionType, type DraftQuestion } from "@types";
 import styles from "./BuilderQuestionCard.module.css";
 import OptionManager from "./OptionManager";
+import { QUESTION_TYPE_OPTIONS, type QuestionTypeOption } from "../../config/formConfig";
 
-interface QuestionTypeOption {
-  value: QuestionType;
-  label: string;
-}
-
-const QUESTION_TYPE_OPTIONS: QuestionTypeOption[] = [
-  { value: QuestionType.TEXT, label: 'Short Answer' },
-  { value: QuestionType.MULTIPLE_CHOICE, label: 'Multiple Choice' },
-  { value: QuestionType.CHECKBOX, label: 'Checkboxes' },
-  { value: QuestionType.DATE, label: 'Date' },
-];
-
-const customSelectStyles: StylesConfig<QuestionTypeOption, false> = {
-  control: (provided) => ({
-    ...provided,
-    minWidth: '200px',
-    padding: '2px',
-    borderRadius: '4px',
-    borderColor: '#ccc',
-    boxShadow: 'none',
-    '&:hover': {
-      borderColor: '#b3b3b3',
-    },
-  }),
-  option: (provided, state) => ({
-    ...provided,
-    backgroundColor: state.isSelected ? '#e8f0fe' : state.isFocused ? '#f1f3f4' : 'white',
-    color: state.isSelected ? '#1967d2' : '#202124',
-    cursor: 'pointer',
-    ':active': {
-      backgroundColor: '#e8f0fe',
-    },
-  }),
-  menu: (provided) => ({
-    ...provided,
-    zIndex: 10,
-  }),
-};
-
-interface BuilderQuestionCardProps {
-  index: number;
-  question: DraftQuestion;
+interface QuestionActions {
   updateQuestion: <K extends keyof Omit<DraftQuestion, "tempId" | "options">>(
     index: number,
     field: K,
     value: DraftQuestion[K]
   ) => void;
   removeQuestion: (index: number) => void;
-  optionMethods: {
-    addOption: (qIndex: number) => void;
-    updateOption: (qIndex: number, oIndex: number, value: string) => void;
-    removeOption: (qIndex: number, oIndex: number) => void;
-  };
+  addOption: (qIndex: number) => void;
+  updateOption: (qIndex: number, oIndex: number, value: string) => void;
+  removeOption: (qIndex: number, oIndex: number) => void;
+}
+
+interface BuilderQuestionCardProps {
+  index: number;
+  question: DraftQuestion;
+  actions: QuestionActions;
 }
 
 const BuilderQuestionCard = ({
   index,
   question,
-  updateQuestion,
-  removeQuestion,
-  optionMethods,
+  actions,
 }: BuilderQuestionCardProps) => {
   const showOptions =
     question.type === QuestionType.MULTIPLE_CHOICE ||
     question.type === QuestionType.CHECKBOX;
 
   const handleTextChange = (e: ChangeEvent<HTMLInputElement>) => {
-    updateQuestion(index, "text", e.target.value);
+    actions.updateQuestion(index, "text", e.target.value);
   };
 
   const handleTypeChange = (newValue: SingleValue<QuestionTypeOption>) => {
     if (newValue) {
-      updateQuestion(index, "type", newValue.value);
+      actions.updateQuestion(index, "type", newValue.value);
     }
   };
 
@@ -97,44 +59,46 @@ const BuilderQuestionCard = ({
             value={selectedOption}
             onChange={handleTypeChange}
             options={QUESTION_TYPE_OPTIONS}
-            styles={customSelectStyles}
-            aria-label="Question Type"
-            isSearchable={false}
+            classNamePrefix="form-select"
           />
         </div>
-
-        <button
-          onClick={() => removeQuestion(index)}
-          className={styles.deleteBtn}
-          title="Remove question"
-          aria-label="Remove question"
-          type="button"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="3 6 5 6 21 6"></polyline>
-            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-          </svg>
-        </button>
       </div>
 
       {showOptions && (
         <OptionManager
           questionIndex={index}
           type={question.type}
-          options={question.options}
-          {...optionMethods}
+          options={question.options || []}
+          addOption={actions.addOption}
+          updateOption={actions.updateOption}
+          removeOption={actions.removeOption}
         />
       )}
 
       <div className={styles.questionFooter}>
-        <label className={styles.requiredLabel}>
-          <input
-            type="checkbox"
-            checked={question.required}
-            onChange={(e) => updateQuestion(index, "required", e.target.checked)}
-          />
-          Required
-        </label>
+        <div className={styles.footerRight}>
+          <label className={styles.requiredLabel}>
+            Required
+            <input
+              type="checkbox"
+              checked={!!question.required}
+              onChange={(e) => actions.updateQuestion(index, 'required', e.target.checked)}
+            />
+          </label>
+          <div style={{ width: '1px', height: '24px', background: '#ddd', margin: '0 8px' }}></div>
+          <button
+            onClick={() => actions.removeQuestion(index)}
+            className={styles.deleteBtn}
+            title="Remove question"
+            aria-label="Remove question"
+            type="button"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
   );

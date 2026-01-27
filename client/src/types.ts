@@ -1,7 +1,28 @@
+import {
+  QuestionType,
+  type Question,
+  type Option,
+  type Form,
+  type Answer,
+  type Response,
+  type QuestionInput,
+  type CreateFormInput,
+  type AnswerInput,
+  type SubmitResponseInput,
+} from '@forms/shared';
 
-export * from '../../server/src/types';
-
-import { QuestionType, type Question, type Option } from '../../server/src/types';
+export { QuestionType };
+export type {
+  Question,
+  Option,
+  Form,
+  Answer,
+  Response,
+  QuestionInput,
+  CreateFormInput,
+  AnswerInput,
+  SubmitResponseInput,
+};
 import React from 'react';
 import { store } from './store/store';
 
@@ -14,7 +35,7 @@ export interface Props {
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
-export interface DraftOption extends Option { }
+export type DraftOption = Option;
 
 export interface DraftQuestion extends Omit<Question, 'id' | 'options'> {
   tempId: string;
