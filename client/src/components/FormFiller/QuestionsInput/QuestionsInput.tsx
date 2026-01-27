@@ -1,7 +1,7 @@
 import { type ChangeEvent, type ReactElement } from "react";
 import { type Option } from "@types";
 import styles from "./QuestionsInput.module.css";
-import { ChoiceOption } from "./ChoiceOption";
+import { ChoiceOption } from "../ChoiseOption/ChoiceOption";
 
 interface InputProps {
   id: string;

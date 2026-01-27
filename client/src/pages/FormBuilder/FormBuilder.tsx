@@ -1,6 +1,6 @@
 import type { ReactElement } from "react";
-import BuilderHeader from "../../components/FormBuilder/BuilderHeader";
-import BuilderQuestionCard from "../../components/FormBuilder/BuilderQuestionCard";
+import BuilderHeader from "../../components/FormBuilder/BuilderHeader/BuilderHeader";
+import BuilderQuestionCard from "../../components/FormBuilder/BuilderQuestionCard/BuilderQuestionCard";
 import { useFormBuilder } from "../../hooks/useFormBuilder";
 import styles from "./FormBuilder.module.css";
 

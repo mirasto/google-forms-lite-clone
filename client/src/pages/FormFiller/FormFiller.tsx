@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import type { ReactElement } from "react";
 import { useFormFiller } from "../../hooks/useFormFiller";
 import styles from "./FormFiller.module.css";
-import FormQuestions from "../../components/FormFiller/FormQuestions";
+import FormQuestions from "../../components/FormFiller/FormQuestion/FormQuestions";
 
 const FormFiller = (): ReactElement => {
   const {

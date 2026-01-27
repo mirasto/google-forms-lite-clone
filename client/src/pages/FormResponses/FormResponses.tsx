@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
 import type { ReactElement } from 'react';
-import ResponsesList from '../../components/FormResponses/ResponsesList';
+import ResponsesList from 'src/components/FormResponses/ResponsesList/ResponsesList';
 import { useGetFormQuery, useGetResponsesQuery } from '../../store/api.enhanced';
 import styles from './FormResponses.module.css';
 

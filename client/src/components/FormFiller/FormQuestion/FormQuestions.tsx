@@ -1,7 +1,7 @@
 import type { ReactElement } from "react";
 import { type Question, QuestionType } from "@types";
 import styles from "./FormQuestions.module.css";
-import { TextInput, DateInput, ChoiceInput } from "./QuestionsInput";
+import { TextInput, DateInput, ChoiceInput } from "../QuestionsInput/QuestionsInput";
 
 interface FormQuestionsProps {
   question: Question;
