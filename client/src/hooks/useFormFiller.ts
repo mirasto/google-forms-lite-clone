@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
+
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import { useGetFormQuery, useSubmitResponseMutation } from '../store/api.enhanced';
+
+import { useGetFormQuery, useSubmitResponseMutation } from '@store/api.enhanced';
+
 import { VALIDATION_MESSAGES, API_MESSAGES } from '@constants';
 
 export const useFormFiller = () => {

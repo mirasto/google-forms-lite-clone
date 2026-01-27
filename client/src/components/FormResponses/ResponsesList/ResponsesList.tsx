@@ -1,6 +1,7 @@
 import { type ReactElement } from "react";
 import { type Form, type Response } from "@types";
-import ResponsesAnswer from "./ResponsesAnswer/ResponsesAnswer";
+
+import ResponsesAnswer from "@components/FormResponses/ResponsesAnswer/ResponsesAnswer";
 import styles from "./ResponsesList.module.css";
 
 interface ResponsesListProps {

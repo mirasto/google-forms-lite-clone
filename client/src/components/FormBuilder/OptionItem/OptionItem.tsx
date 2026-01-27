@@ -1,5 +1,6 @@
 import type { ChangeEvent, ReactElement } from "react";
 import { QuestionType, type DraftOption } from "@types";
+
 import styles from "./OptionItem.module.css";
 
 export interface OptionItemProps {

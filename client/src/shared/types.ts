@@ -1,5 +1,5 @@
 import React from 'react';
-import { store } from '../store/store';
+import { store } from '@store/store';
 import {
   QuestionType,
   type Form,
@@ -11,7 +11,7 @@ import {
   type AnswerInput,
   type CreateFormMutationVariables,
   type SubmitResponseMutationVariables
-} from '../store/api.generated';
+} from '@store/api.generated';
 export type CreateFormInput = CreateFormMutationVariables;
 export type SubmitResponseInput = SubmitResponseMutationVariables;
 

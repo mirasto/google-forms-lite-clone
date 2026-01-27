@@ -1,5 +1,6 @@
 import { type ReactElement } from "react";
 import { type Answer } from "@types";
+
 import styles from "./ResponsesAnswer.module.css";
 
 interface ResponsesAnswerProps {

@@ -10,7 +10,7 @@ vi.mock('react-router-dom', () => ({
 }));
 
 const mockCreateForm = vi.fn();
-vi.mock('../store/api', () => {
+vi.mock('@store/api', () => {
   const hooks = {
     useCreateFormMutation: () => [mockCreateForm, { isLoading: false }],
   };

@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
+
 import type { Form } from '@types';
 import type { ReactElement } from 'react';
+
 import styles from './FormsCard.module.css';
 
 interface FormsCardProps {

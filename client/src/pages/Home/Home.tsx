@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
 import type { ReactElement } from 'react';
-import FormsCard from '../../components/Home/FormsCard';
-import { useGetFormsQuery } from '../../store/api.enhanced';
+
+import FormsCard from '@components/Home/FormsCard';
+import { useGetFormsQuery } from '@store/api.enhanced';
+
 import styles from './Home.module.css';
 
 const Home = (): ReactElement => {

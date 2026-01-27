@@ -1,4 +1,5 @@
 import type { ChangeEvent, ReactElement } from "react";
+
 import styles from "./QuestionFooter.module.css";
 
 export interface QuestionFooterProps {

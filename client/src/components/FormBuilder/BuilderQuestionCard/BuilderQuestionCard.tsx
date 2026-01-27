@@ -1,10 +1,14 @@
 import type { ChangeEvent, ReactElement } from "react";
 import Select, { type SingleValue } from "react-select";
+
 import { QuestionType, type DraftQuestion } from "@types";
+
 import styles from "./BuilderQuestionCard.module.css";
-import OptionManager from "../OptionManager/OptionManager";
-import { QUESTION_TYPE_OPTIONS, type QuestionTypeOption } from "../../../config/formConfig";
-import QuestionFooter from "../OptionFooter/QuestionFooter";
+
+import { QUESTION_TYPE_OPTIONS, type QuestionTypeOption } from "@config/formConfig";
+
+import OptionManager from "@components/FormBuilder/OptionManager/OptionManager";
+import QuestionFooter from "@components/FormBuilder/OptionFooter/QuestionFooter";
 
 export interface QuestionActions {
   updateQuestion: <K extends keyof Omit<DraftQuestion, "tempId" | "options">>(
