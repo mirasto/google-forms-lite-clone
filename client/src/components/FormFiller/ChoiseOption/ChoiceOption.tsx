@@ -25,7 +25,7 @@ export const ChoiceOption = ({
     <label className={styles.optionItem}>
       <ChoiceControl
         type={type}
-        name={groupId}
+        name={type === "CHECKBOX" ? `${groupId}_${option.id}` : groupId}
         value={option.value}
         checked={isSelected}
         hasError={hasError}

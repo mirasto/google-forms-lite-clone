@@ -6,6 +6,7 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { useGetFormQuery, useSubmitResponseMutation } from '@store/api.enhanced';
 
 import { VALIDATION_MESSAGES, API_MESSAGES } from '@constants';
+import { QuestionType } from '@types';
 
 export const useFormFiller = () => {
   const { id } = useParams<{ id: string }>();
@@ -77,10 +78,26 @@ export const useFormFiller = () => {
       return;
     }
 
-    const answersList = Object.entries(answers).map(([questionId, values]) => ({
-      questionId,
-      values,
-    }));
+    const answersList = Object.entries(answers).map(([questionId, values]) => {
+      const question = form.questions.find((q) => q.id === questionId);
+      
+      if (question && (question.type === QuestionType.MultipleChoice || question.type === QuestionType.Checkbox)) {
+        const mappedValues = values.map((id) => {
+          const option = question.options?.find((opt) => opt.id === id);
+          return option ? option.value : id;
+        });
+        
+        return {
+          questionId,
+          values: mappedValues,
+        };
+      }
+
+      return {
+        questionId,
+        values,
+      };
+    });
 
     try {
       await submitResponse({

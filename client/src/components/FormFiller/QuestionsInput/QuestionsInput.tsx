@@ -29,11 +29,11 @@ interface CheckboxChoiceProps extends ChoiceBaseProps {
 export const ChoiceInput = (props: ChoiceProps): ReactElement => {
 
   const { id, options, selectedValues, hasError, labelledBy } = props;
-  const handleChoiceChange = (optionValue: string, checked: boolean) => {
+  const handleChoiceChange = (optionId: string, checked: boolean) => {
     if (props.type === "CHECKBOX") {
-      props.onChange(id, optionValue, checked);
+      props.onChange(id, optionId, checked);
     } else {
-      props.onChange(id, optionValue);
+      props.onChange(id, optionId);
     }
   };
   
@@ -45,10 +45,10 @@ export const ChoiceInput = (props: ChoiceProps): ReactElement => {
           groupId={id}
           option={option}
           type={props.type}
-          isSelected={selectedValues.includes(option.value)}
+          isSelected={selectedValues.includes(option.id)}
           hasError={hasError}
           onChange={(event: ChangeEvent<HTMLInputElement>) => {
-            handleChoiceChange(option.value, event.target.checked);
+            handleChoiceChange(option.id, event.target.checked);
           }}
         />
       ))}
