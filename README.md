@@ -1,6 +1,6 @@
 # Google Forms Lite Clone
 
-A simplified clone of Google Forms built as a monorepo using React, TypeScript, Redux Toolkit, and GraphQL.
+A simplified clone of Google Forms built as a monorepo using React 19, NestJS, and GraphQL.
 
 ## Features
 
@@ -17,29 +17,32 @@ A simplified clone of Google Forms built as a monorepo using React, TypeScript, 
   - View collected responses for each form.
 - **Architecture:**
   - Monorepo structure managing Client and Server.
-  - GraphQL API with Apollo Server.
-  - State management via Redux Toolkit Query.
+  - **Backend:** NestJS with Apollo Server (GraphQL).
+  - **Frontend:** React 19 with Redux Toolkit Query.
+  - **Type Safety:** Shared types and GraphQL Code Generator.
 
 ## Tech Stack
 
 ### Client
-- **Framework:** React (Vite)
+- **Framework:** React 19 (Vite)
 - **Language:** TypeScript
 - **State Management:** Redux Toolkit (RTK Query)
+- **Routing:** React Router v7
 - **Styling:** CSS Modules
-- **Routing:** React Router
+- **Notifications:** Notiflix
 - **Testing:** Vitest, React Testing Library
 
 ### Server
-- **Runtime:** Node.js
+- **Framework:** NestJS
 - **API:** Apollo Server (GraphQL)
+- **Validation:** Zod & Class Validator
 - **Language:** TypeScript
 - **Data Store:** In-memory (Variables)
 - **Testing:** Vitest
 
 ## Prerequisites
 
-- Node.js (v14 or higher)
+- Node.js (v18 or higher recommended)
 - npm
 
 ## Setup & Running
@@ -79,7 +82,7 @@ To build the client application for production deployment:
     npm run preview
     ```
 
-    *Note: The server currently runs directly from source (using `ts-node`) and does not require a build step.*
+    *Note: The server currently runs directly from source (using `tsx`) and does not require a build step for development.*
 
 ## Running Tests
 
@@ -103,21 +106,23 @@ npm run test
 
 ```
 google-forms-clone-new/
-├── client/                 # React Frontend
+├── client/                 # React Frontend (Vite)
 │   ├── src/
-│   │   ├── components/
+│   │   ├── components/     # UI Components
 │   │   ├── hooks/          # Custom hooks (useFormBuilder, useFormFiller)
 │   │   ├── pages/          # Main views (Home, FormBuilder, FormFiller)
 │   │   ├── store/          # Redux store and API slices
 │   │   └── types.ts        # Shared TypeScript interfaces
 │   └── vite.config.ts
-├── server/                 # Node.js GraphQL Backend
+├── server/                 # NestJS Backend
 │   ├── src/
-│   │   ├── index.ts        # Server entry point
+│   │   ├── forms/          # Forms Module (Resolvers, Service, DTOs)
+│   │   ├── app.module.ts   # Main App Module
+│   │   ├── main.ts         # Server Entry Point
 │   │   ├── schema.ts       # GraphQL Type Definitions
-│   │   ├── resolvers.ts    # API Logic
-│   │   └── types.ts        # Server-side types
+│   │   └── validation.ts   # Zod Validation Schemas
 │   └── vitest.config.ts
+├── shared/                 # Shared Types Workspace
 └── package.json            # Root configuration
 ```
 
@@ -130,3 +135,4 @@ google-forms-clone-new/
 - **Mutations:**
     - `createForm`: Create a new form with questions and validation rules.
     - `submitResponse`: Submit answers to a form.
+
