@@ -72,11 +72,6 @@
   margin: 0 -24px 12px;
 }
 
-.requiredNotice {
-  color: #d93025;
-  font-size: 14px;
-}
-
 .questionsList {
   display: flex;
   flex-direction: column;

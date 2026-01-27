@@ -41,6 +41,7 @@ export const api = createApi({
                   id
                   value
                 }
+                required
               }
             }
           }

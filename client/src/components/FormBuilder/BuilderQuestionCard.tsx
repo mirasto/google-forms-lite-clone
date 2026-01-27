@@ -80,6 +80,17 @@ const BuilderQuestionCard = ({
           {...optionMethods}
         />
       )}
+
+      <div className={styles.questionFooter}>
+        <label className={styles.requiredLabel}>
+          <input
+            type="checkbox"
+            checked={question.required}
+            onChange={(e) => updateQuestion(index, "required", e.target.checked)}
+          />
+          Required
+        </label>
+      </div>
     </div>
   );
 };

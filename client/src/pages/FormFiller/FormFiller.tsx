@@ -54,7 +54,7 @@ const FormFiller = () => {
           <p className={styles.formDescription}>{form.description}</p>
         )}
         <div className={styles.divider} />
-        <span className={styles.requiredNotice}>* Required</span>
+        
       </header>
 
       <form className={styles.questionsList} onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>

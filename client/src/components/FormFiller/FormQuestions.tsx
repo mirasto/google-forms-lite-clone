@@ -67,7 +67,6 @@ const FormQuestions = ({
 
       {error && (
         <div className={styles.errorMessage} role="alert">
-          <span className={styles.errorIcon}>⚠️</span>
           {error}
         </div>
       )}
