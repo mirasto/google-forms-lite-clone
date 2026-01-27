@@ -89,7 +89,7 @@ export const api = createApi({
       query: (input) => ({
         document: `
           ${FORM_FRAGMENT}
-          mutation CreateForm($title: String!, $description: String, $questions: [QuestionInput]) {
+          mutation CreateForm($title: String!, $description: String, $questions: [QuestionInput!]!) {
             createForm(title: $title, description: $description, questions: $questions) {
               ...FormFields
             }
@@ -97,12 +97,13 @@ export const api = createApi({
         `,
         variables: input,
       }),
+      transformResponse: (response: { createForm: Form }) => response.createForm,
       invalidatesTags: ['Form'],
     }),
     submitResponse: builder.mutation<Response, SubmitResponseInput>({
       query: (input) => ({
         document: `
-          mutation SubmitResponse($formId: ID!, $answers: [AnswerInput]) {
+          mutation SubmitResponse($formId: ID!, $answers: [AnswerInput!]!) {
             submitResponse(formId: $formId, answers: $answers) {
               id
               formId
@@ -111,6 +112,7 @@ export const api = createApi({
         `,
         variables: input,
       }),
+      transformResponse: (response: { submitResponse: Response }) => response.submitResponse,
       invalidatesTags: (_result, _error, { formId }) => [{ type: 'Response', id: formId }],
     }),
   }),

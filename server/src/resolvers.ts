@@ -1,5 +1,5 @@
 import type { IResolvers } from '@graphql-tools/utils';
-import type { Context, Form, Response, CreateFormInput, SubmitResponseInput, Resolvers as MyResolvers } from './types';
+import type { Context, Form, Response, CreateFormInput, SubmitResponseInput, Resolvers as MyResolvers, Answer } from './types';
 import * as factories from './factories';
 import { GraphQLError } from 'graphql';
 
@@ -57,6 +57,6 @@ export const resolvers: IResolvers<unknown, Context> = {
   },
 
   Answer: {
-    value: (parent) => parent.values[0] ?? null,
+    value: (parent: Answer) => parent.values[0] ?? null,
   },
 };
