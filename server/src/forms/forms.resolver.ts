@@ -23,7 +23,7 @@ const validate = <S extends ZodType>(schema: S, data: unknown): z.infer<S> => {
 @Resolver('Form')
 export class FormsResolver {
   constructor(
-    private readonly formsService: FormsService,
+    @Inject(FormsService) private readonly formsService: FormsService,
     @Inject('PUB_SUB') private readonly pubSub: PubSub,
   ) {}
 
