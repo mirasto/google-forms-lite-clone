@@ -31,6 +31,8 @@ export const createFormSchema = z.object({
         });
         return;
       }
+      // Relaxed validation: Allow duplicate option values
+      /*
       const values = question.options.map(o => o.value);
       const uniqueValues = new Set(values);
       if (uniqueValues.size !== values.length) {
@@ -40,6 +42,7 @@ export const createFormSchema = z.object({
           path: ['questions', index, 'options']
         });
       }
+      */
     } else {
     }
   });

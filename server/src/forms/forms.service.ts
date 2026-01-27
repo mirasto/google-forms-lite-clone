@@ -1,7 +1,8 @@
-import { Form, Response } from './types.js';
+import { Injectable } from '@nestjs/common';
+import { Form, Response } from '../types.js';
 
-
-export class InMemoryStore {
+@Injectable()
+export class FormsService {
   private forms: Form[] = [];
   private responses: Response[] = [];
 
