@@ -2,16 +2,14 @@ import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { typeDefs } from './schema';
 import { resolvers } from './resolvers';
+import type { Context } from './types';
 
-import { BaseContext } from '@apollo/server';
-
-const server = new ApolloServer<BaseContext>({
+const server = new ApolloServer<Context>({
   typeDefs,
-  resolvers: resolvers as unknown as undefined,
+  resolvers,
 });
 
 startStandaloneServer(server, {
   listen: { port: 4000 },
-}).then(({ url }) => {
-  console.log(`Server ready at ${url}`);
+  context: async () => ({ userId: undefined }),
 });

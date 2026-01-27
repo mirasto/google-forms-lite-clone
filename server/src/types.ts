@@ -1,3 +1,5 @@
+import { GraphQLResolveInfo } from 'graphql';
+
 export const QuestionType = {
   TEXT: 'TEXT',
   MULTIPLE_CHOICE: 'MULTIPLE_CHOICE',
@@ -5,7 +7,7 @@ export const QuestionType = {
   DATE: 'DATE',
 } as const;
 
-export type QuestionType = (typeof QuestionType)[keyof typeof QuestionType];
+export type QuestionType = keyof typeof QuestionType;
 
 export interface Option {
   id: string;
@@ -17,7 +19,7 @@ export interface Question {
   text: string;
   type: QuestionType;
   options?: Option[];
-  required?: boolean;
+  required: boolean;
 }
 
 export interface Form {
@@ -42,7 +44,7 @@ export interface QuestionInput {
   text: string;
   type: QuestionType;
   options?: Option[];
-  required?: boolean;
+  required: boolean;
 }
 
 export interface CreateFormInput {
@@ -61,21 +63,30 @@ export interface SubmitResponseInput {
   answers: AnswerInput[];
 }
 
-export type ResolverFn<TResult, TParent, TContext, TArgs> = (
+export interface Context {
+  userId?: string;
+}
+
+export type ResolverFn<TResult, TParent = {}, TArgs = {}> = (
   parent: TParent,
   args: TArgs,
-  context: TContext,
-  info: unknown
+  context: Context,
+  info: GraphQLResolveInfo
 ) => Promise<TResult> | TResult;
+
 
 export interface Resolvers {
   Query: {
-    forms: ResolverFn<Form[], unknown, unknown, unknown>;
-    form: ResolverFn<Form | undefined, unknown, unknown, { id: string }>;
-    responses: ResolverFn<Response[], unknown, unknown, { formId: string }>;
+    forms: ResolverFn<Form[]>;
+    form: ResolverFn<Form | null, {}, { id: string }>;
+    responses: ResolverFn<Response[], {}, { formId: string }>;
   };
   Mutation: {
-    createForm: ResolverFn<Form, unknown, unknown, { title: string; description?: string; questions?: QuestionInput[] }>;
-    submitResponse: ResolverFn<Response, unknown, unknown, { formId: string; answers: AnswerInput[] }>;
+    createForm: ResolverFn<Form, {}, CreateFormInput>;
+    submitResponse: ResolverFn<Response, {}, SubmitResponseInput>;
   };
+  Answer?: {
+    value: ResolverFn<string | null, Answer>;
+  };
+  [key: string]: unknown;
 }

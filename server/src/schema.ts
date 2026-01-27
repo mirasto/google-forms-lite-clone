@@ -18,7 +18,7 @@ export const typeDefs = gql`
     text: String!
     type: QuestionType!
     options: [Option!]
-    required: Boolean
+    required: Boolean!
   }
 
   type Form {
@@ -31,7 +31,7 @@ export const typeDefs = gql`
   type Answer {
     questionId: ID!
     value: String
-    values: [String]
+    values: [String!]!
   }
 
   type Response {
@@ -49,12 +49,12 @@ export const typeDefs = gql`
     text: String!
     type: QuestionType!
     options: [OptionInput!]
-    required: Boolean
+    required: Boolean!
   }
 
   input AnswerInput {
     questionId: ID!
-    values: [String]
+    values: [String!]!
   }
 
   type Query {
@@ -64,7 +64,7 @@ export const typeDefs = gql`
   }
 
   type Mutation {
-    createForm(title: String!, description: String, questions: [QuestionInput]): Form!
-    submitResponse(formId: ID!, answers: [AnswerInput]): Response!
+    createForm(title: String!, description: String, questions: [QuestionInput!]!): Form!
+    submitResponse(formId: ID!, answers: [AnswerInput!]!): Response!
   }
 `;
