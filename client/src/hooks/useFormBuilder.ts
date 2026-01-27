@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { useCreateFormMutation } from '../store/api';
-import { QuestionType, type DraftQuestion } from '@types';
-import { VALIDATION_MESSAGES, API_MESSAGES } from '../constants';
+import { type DraftQuestion } from '@types';
+import { API_MESSAGES } from '../constants';
 import { createDraftQuestion, createDraftOption } from '../utils/formFactories';
+import { validateForm } from '../utils/formValidation';
+import { formatQuestionsForSubmission } from '../utils/formFormatters';
 
 const updateAtIndex = <T>(list: T[], index: number, updates: Partial<T>): T[] => {
   const next = [...list];
@@ -66,41 +68,25 @@ export const useFormBuilder = () => {
     });
   };
 
-  const validateForm = (): string | null => {
-    if (!title.trim()) return VALIDATION_MESSAGES.NO_TITLE;
-    if (questions.length === 0) return VALIDATION_MESSAGES.MIN_ONE_QUESTION;
-
-    for (const question of questions) {
-      if (!question.text.trim()) return VALIDATION_MESSAGES.EMPTY_QUESTION_TEXT;
-
-      const isChoiceType = question.type === QuestionType.MULTIPLE_CHOICE || question.type === QuestionType.CHECKBOX;
-      if (isChoiceType) {
-        const hasValidOptions = question.options?.some((opt) => opt.value.trim());
-        if (!hasValidOptions) return VALIDATION_MESSAGES.MIN_ONE_OPTION;
-      }
-    }
-    return null;
-  };
-
   const saveForm = async (): Promise<void> => {
-    const validationError = validateForm();
+    const validationError = validateForm(title, questions);
     if (validationError) {
       Notify.failure(validationError);
       return;
     }
 
     try {
-      const formattedQuestions = questions.map(({ tempId, options, ...rest }) => ({
-        ...rest,
-        options: options?.filter((option) => option.value.trim()) || [],
-      }));
-
+      const formattedQuestions = formatQuestionsForSubmission(questions);
       await createForm({ title, description, questions: formattedQuestions }).unwrap();
       Notify.success(API_MESSAGES.CREATE_SUCCESS);
       navigate('/');
     } catch (err) {
       console.error('Failed to create form', err);
-      Notify.failure(API_MESSAGES.CREATE_ERROR);
+      if (err instanceof Error) {
+        Notify.failure(err.message);
+      } else {
+        Notify.failure(API_MESSAGES.CREATE_ERROR);
+      }
     }
   };
 
