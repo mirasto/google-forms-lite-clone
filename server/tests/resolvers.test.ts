@@ -139,7 +139,6 @@ describe('Resolvers', () => {
      
       const result = await resolvers.Mutation.submitResponse({}, answerInput, context, mockInfo);
 
-      // Should only have 1 answer
       expect(result.answers).toHaveLength(1);
       expect(result.answers[0].questionId).toBe(form.questions[0].id);
       expect(result.answers[0].values).toEqual(['Valid Answer']);

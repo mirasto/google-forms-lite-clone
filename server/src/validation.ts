@@ -22,7 +22,6 @@ export const createFormSchema = z.object({
   })).min(1, 'Form must have at least one question').max(100, 'Too many questions (max 100)')
 }).superRefine((data, ctx) => {
   data.questions.forEach((question, index) => {
-    // Validation for question types that require options
     if (question.type === QuestionType.MULTIPLE_CHOICE || question.type === QuestionType.CHECKBOX) {
       if (!question.options || question.options.length === 0) {
         ctx.addIssue({
@@ -30,10 +29,8 @@ export const createFormSchema = z.object({
           message: `Question "${question.text}" must have options`,
           path: ['questions', index, 'options']
         });
-        return; // Skip uniqueness check if no options
+        return;
       }
-
-      // Check for unique option values
       const values = question.options.map(o => o.value);
       const uniqueValues = new Set(values);
       if (uniqueValues.size !== values.length) {
@@ -44,17 +41,9 @@ export const createFormSchema = z.object({
         });
       }
     } else {
-      // Clear options for types that don't support them (TEXT, DATE)
-      // Note: We cannot directly modify 'data' in superRefine in a way that affects the output of parse() 
-      // without using .transform(). However, superRefine is for validation.
-      // To strip data, we should use a transform before or after.
-      // But since we are inside Zod pipeline, let's just validate that they shouldn't be there or ignore them.
-      // The user asked to "remove (nullify)" them. 
-      // We'll handle this by adding a transform step to the schema.
     }
   });
 }).transform((data) => {
-  // Transformation step to clean up data
   return {
     ...data,
     questions: data.questions.map(q => {
