@@ -10,16 +10,30 @@ vi.mock('react-router-dom', () => ({
 }));
 
 const mockCreateForm = vi.fn();
-vi.mock('../store/api', () => ({
-  useCreateFormMutation: () => [mockCreateForm, { isLoading: false }],
-  api: {
-    reducerPath: 'api',
-    reducer: () => ({}),
-    middleware: {
-      concat: vi.fn(() => []),
-    }
-  }
-}));
+vi.mock('../store/api', () => {
+  const hooks = {
+    useCreateFormMutation: () => [mockCreateForm, { isLoading: false }],
+  };
+  return {
+    api: {
+      reducerPath: 'api',
+      reducer: () => ({}),
+      middleware: {
+        concat: vi.fn(() => []),
+      },
+      injectEndpoints: vi.fn(() => ({
+        ...hooks,
+        enhanceEndpoints: vi.fn(() => ({
+          ...hooks
+        })),
+      })),
+      enhanceEndpoints: vi.fn(() => ({
+        ...hooks
+      })),
+    },
+    ...hooks,
+  };
+});
 
 vi.mock('@reduxjs/toolkit', async (importOriginal) => {
   const actual = await importOriginal() as Record<string, unknown>;

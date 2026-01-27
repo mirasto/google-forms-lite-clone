@@ -79,8 +79,6 @@
     height: 16px;
     accent-color: #673ab7;
 }
-
-/* React Select Overrides */
 .selectWrapper :global(.form-select__control) {
     min-width: 200px;
     padding: 2px;

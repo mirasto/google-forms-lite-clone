@@ -12,8 +12,6 @@ import {
   type CreateFormMutationVariables,
   type SubmitResponseMutationVariables
 } from '../store/api.generated';
-
-// Re-export aliases to match previous usage
 export type CreateFormInput = CreateFormMutationVariables;
 export type SubmitResponseInput = SubmitResponseMutationVariables;
 

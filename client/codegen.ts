@@ -15,7 +15,7 @@ const config: CodegenConfig = {
       config: {
         importBaseApiFrom: './api',
         exportHooks: true,
-        overrideExisting: false // Don't override the base API file, just extend it
+        overrideExisting: false
       }
     }
   }
