@@ -1,10 +1,16 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { v4 as uuidv4 } from 'uuid';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { useCreateFormMutation } from '../store/api';
 import { QuestionType, type DraftQuestion } from '@types';
 import { VALIDATION_MESSAGES, API_MESSAGES } from '../constants';
+import { createDraftQuestion, createDraftOption } from '../utils/formFactories';
+
+const updateAtIndex = <T>(list: T[], index: number, updates: Partial<T>): T[] => {
+  const next = [...list];
+  next[index] = { ...next[index], ...updates };
+  return next;
+};
 
 export const useFormBuilder = () => {
   const navigate = useNavigate();
@@ -13,14 +19,11 @@ export const useFormBuilder = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [questions, setQuestions] = useState<DraftQuestion[]>([
-    { tempId: uuidv4(), text: '', type: QuestionType.TEXT, options: [], required: false },
+    createDraftQuestion(),
   ]);
 
   const addQuestion = (): void => {
-    setQuestions((prev) => [
-      ...prev,
-      { tempId: uuidv4(), text: '', type: QuestionType.TEXT, options: [], required: false },
-    ]);
+    setQuestions((prev) => [...prev, createDraftQuestion()]);
   };
 
   const updateQuestion = <K extends keyof Omit<DraftQuestion, 'tempId' | 'options'>>(
@@ -28,11 +31,7 @@ export const useFormBuilder = () => {
     field: K,
     value: DraftQuestion[K]
   ): void => {
-    setQuestions((prev) => {
-      const next = [...prev];
-      next[index] = { ...next[index], [field]: value };
-      return next;
-    });
+    setQuestions((prev) => updateAtIndex(prev, index, { [field]: value }));
   };
 
   const removeQuestion = (index: number): void => {
@@ -41,68 +40,59 @@ export const useFormBuilder = () => {
 
   const addOption = (qIndex: number): void => {
     setQuestions((prev) => {
-      const next = [...prev];
-      const currentOptions = next[qIndex].options || [];
-      next[qIndex] = {
-        ...next[qIndex],
-        options: [...currentOptions, { id: uuidv4(), value: '' }],
-      };
-      return next;
+      const currentOptions = prev[qIndex].options || [];
+      const newOptions = [...currentOptions, createDraftOption()];
+      return updateAtIndex(prev, qIndex, { options: newOptions });
     });
   };
 
   const updateOption = (qIndex: number, oIndex: number, value: string): void => {
     setQuestions((prev) => {
-      const next = [...prev];
-      if (next[qIndex].options) {
-        const nextOptions = [...next[qIndex].options!];
-        nextOptions[oIndex] = { ...nextOptions[oIndex], value };
-        next[qIndex] = { ...next[qIndex], options: nextOptions };
-      }
-      return next;
+      const question = prev[qIndex];
+      if (!question.options) return prev;
+
+      const newOptions = updateAtIndex(question.options, oIndex, { value });
+      return updateAtIndex(prev, qIndex, { options: newOptions });
     });
   };
 
   const removeOption = (qIndex: number, oIndex: number): void => {
     setQuestions((prev) => {
-      const next = [...prev];
-      if (next[qIndex].options) {
-        next[qIndex] = {
-          ...next[qIndex],
-          options: next[qIndex].options!.filter((_, i) => i !== oIndex),
-        };
-      }
-      return next;
+      const question = prev[qIndex];
+      if (!question.options) return prev;
+
+      const newOptions = question.options.filter((_, i) => i !== oIndex);
+      return updateAtIndex(prev, qIndex, { options: newOptions });
     });
   };
 
-  const saveForm = async (): Promise<void> => {
-    if (!title.trim()) {
-      Notify.failure(VALIDATION_MESSAGES.NO_TITLE);
-      return;
-    }
-    if (questions.length === 0) {
-      Notify.failure(VALIDATION_MESSAGES.MIN_ONE_QUESTION);
-      return;
-    }
+  const validateForm = (): string | null => {
+    if (!title.trim()) return VALIDATION_MESSAGES.NO_TITLE;
+    if (questions.length === 0) return VALIDATION_MESSAGES.MIN_ONE_QUESTION;
+
     for (const question of questions) {
-      if (!question.text.trim()) {
-        Notify.failure(VALIDATION_MESSAGES.EMPTY_QUESTION_TEXT);
-        return;
+      if (!question.text.trim()) return VALIDATION_MESSAGES.EMPTY_QUESTION_TEXT;
+
+      const isChoiceType = question.type === QuestionType.MULTIPLE_CHOICE || question.type === QuestionType.CHECKBOX;
+      if (isChoiceType) {
+        const hasValidOptions = question.options?.some((opt) => opt.value.trim());
+        if (!hasValidOptions) return VALIDATION_MESSAGES.MIN_ONE_OPTION;
       }
-      if (question.type === QuestionType.MULTIPLE_CHOICE || question.type === QuestionType.CHECKBOX) {
-        const validOptions = question.options?.filter((option) => option.value.trim()) || [];
-        if (validOptions.length === 0) {
-          Notify.failure(VALIDATION_MESSAGES.MIN_ONE_OPTION);
-          return;
-        }
-      }
+    }
+    return null;
+  };
+
+  const saveForm = async (): Promise<void> => {
+    const validationError = validateForm();
+    if (validationError) {
+      Notify.failure(validationError);
+      return;
     }
 
     try {
-      const formattedQuestions = questions.map(({ tempId, ...rest }) => ({
+      const formattedQuestions = questions.map(({ tempId, options, ...rest }) => ({
         ...rest,
-        options: rest.options?.filter((option) => option.value.trim()) || [],
+        options: options?.filter((option) => option.value.trim()) || [],
       }));
 
       await createForm({ title, description, questions: formattedQuestions }).unwrap();

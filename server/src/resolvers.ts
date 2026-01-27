@@ -1,5 +1,5 @@
-import { v4 as uuidv4 } from 'uuid';
 import { Form, Response, Resolvers } from './types';
+import * as factories from './factories';
 
 const forms = [] as Form[];
 const responses = [] as Response[];
@@ -13,15 +13,19 @@ export const resolvers: Resolvers = {
   },
   Mutation: {
     createForm: (_, { title, description, questions }): Form => {
-      const newForm: Form = {
-        id: uuidv4(),
-        title,
-        description,
-        questions: (questions || []).map((question) => ({
-          ...question,
-          id: uuidv4(),
-        })),
-      };
+      if (!title?.trim()) {
+        throw new Error('Title is required');
+      }
+
+      if (!questions || questions.length === 0) {
+        throw new Error('Form must have at least one question');
+      }
+
+      questions.forEach(q => {
+        if (!q.text?.trim()) throw new Error('Question text is required');
+      });
+
+      const newForm = factories.createForm(title, description, questions);
       forms.push(newForm);
       return newForm;
     },
@@ -31,15 +35,11 @@ export const resolvers: Resolvers = {
         throw new Error('Form not found');
       }
 
-      const newResponse: Response = {
-        id: uuidv4(),
-        formId,
-        answers: answers.map((answer) => ({
-          questionId: answer.questionId,
-          values: answer.values,
-        })),
-      };
+      if (!answers || answers.length === 0) {
+        throw new Error('Response must include answers');
+      }
 
+      const newResponse = factories.createResponse(formId, answers);
       responses.push(newResponse);
       return newResponse;
     },
