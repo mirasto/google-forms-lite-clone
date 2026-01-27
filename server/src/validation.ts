@@ -1,67 +1,83 @@
 import { z } from 'zod';
 import { QuestionType } from './types.js';
+import { VALIDATION_LIMITS } from './constants.js';
 
-const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const {
+  TEXT_MAX_LENGTH,
+  TITLE_MAX_LENGTH,
+  DESC_MAX_LENGTH,
+  OPTION_MAX_LENGTH,
+  MAX_QUESTIONS,
+  MAX_ANSWERS,
+  MAX_ANSWER_VALUES
+} = VALIDATION_LIMITS;
+
+const textBaseSchema = z.string()
+  .trim()
+  .min(1, 'Text is required')
+  .max(TEXT_MAX_LENGTH, `Text exceeds ${TEXT_MAX_LENGTH} characters`);
+
+const optionSchema = z.object({
+  id: z.string().uuid().optional(),
+  value: z.string()
+    .trim()
+    .min(1, 'Option value cannot be empty')
+    .max(OPTION_MAX_LENGTH, `Option value exceeds ${OPTION_MAX_LENGTH} characters`),
+});
+
+const questionBase = z.object({
+  text: textBaseSchema,
+  required: z.boolean(),
+});
+
+const questionSchema = z.discriminatedUnion('type', [
+  questionBase.extend({
+    type: z.literal(QuestionType.TEXT),
+    options: z.undefined().optional(),
+  }),
+  questionBase.extend({
+    type: z.literal(QuestionType.DATE),
+    options: z.undefined().optional(),
+  }),
+  questionBase.extend({
+    type: z.literal(QuestionType.MULTIPLE_CHOICE),
+    options: z.array(optionSchema).min(1, 'Multiple choice questions must have at least one option'),
+  }),
+  questionBase.extend({
+    type: z.literal(QuestionType.CHECKBOX),
+    options: z.array(optionSchema).min(1, 'Checkbox questions must have at least one option'),
+  }),
+]);
 
 export const createFormSchema = z.object({
-  title: z.string().trim().min(1, 'Title is required').max(200, 'Title is too long (max 200 chars)'),
-  description: z.string().max(2000, 'Description is too long (max 2000 chars)').optional().nullable(), 
-  questions: z.array(z.object({
-    text: z.string().trim().min(1, 'Question text is required').max(500, 'Question text is too long (max 500 chars)'),
-    type: z.enum([
-      QuestionType.TEXT,
-      QuestionType.MULTIPLE_CHOICE,
-      QuestionType.CHECKBOX,
-      QuestionType.DATE
-    ]),
-    options: z.array(z.object({
-      id: z.string().regex(uuidRegex, 'Invalid Option ID').optional().nullable(),
-      value: z.string().trim().min(1, 'Option value cannot be empty').max(200, 'Option value is too long (max 200 chars)')
-    })).optional().nullable(),
-    required: z.boolean()
-  })).min(1, 'Form must have at least one question').max(100, 'Too many questions (max 100)')
-}).superRefine((data, ctx) => {
-  data.questions.forEach((question, index) => {
-    if (question.type === QuestionType.MULTIPLE_CHOICE || question.type === QuestionType.CHECKBOX) {
-      if (!question.options || question.options.length === 0) {
-        ctx.addIssue({
-          code: 'custom',
-          message: `Question "${question.text}" must have options`,
-          path: ['questions', index, 'options']
-        });
-        return;
-      }
-      // Relaxed validation: Allow duplicate option values
-      /*
-      const values = question.options.map(o => o.value);
-      const uniqueValues = new Set(values);
-      if (uniqueValues.size !== values.length) {
-        ctx.addIssue({
-          code: 'custom',
-          message: `Options for question "${question.text}" must be unique`,
-          path: ['questions', index, 'options']
-        });
-      }
-      */
-    } else {
-    }
-  });
-}).transform((data) => {
-  return {
-    ...data,
-    questions: data.questions.map(q => {
-      if (q.type === QuestionType.TEXT || q.type === QuestionType.DATE) {
-        return { ...q, options: undefined };
-      }
-      return q;
-    })
-  };
+  title: z.string()
+    .trim()
+    .min(1, 'Title is required')
+    .max(TITLE_MAX_LENGTH, `Title is too long (max ${TITLE_MAX_LENGTH} chars)`),
+  description: z.string()
+    .max(DESC_MAX_LENGTH, 'Description is too long')
+    .optional()
+    .nullable()
+    .transform(val => val ?? undefined),
+  questions: z.array(questionSchema)
+    .min(1, 'Form must have at least one question')
+    .max(MAX_QUESTIONS, `Too many questions (max ${MAX_QUESTIONS})`),
+});
+
+
+const answerSchema = z.object({
+  questionId: z.string().uuid('Invalid question ID format'),
+  values: z.array(
+    z.string().max(DESC_MAX_LENGTH, 'Answer value is too long')
+  ).max(MAX_ANSWER_VALUES, 'Too many values'),
 });
 
 export const submitResponseSchema = z.object({
-  formId: z.string().regex(uuidRegex, 'Invalid Form ID').min(1, 'Form ID is required'),
-  answers: z.array(z.object({
-    questionId: z.string().regex(uuidRegex, 'Invalid Question ID').min(1, 'Question ID is required'),
-    values: z.array(z.string().max(2000, 'Answer is too long (max 2000 chars)')).max(10, 'Too many selected options')
-  })).max(500, 'Too many answers')
+  formId: z.string().uuid('Invalid form ID format'),
+  answers: z.array(answerSchema).max(MAX_ANSWERS, 'Too many answers'),
 });
+
+
+export type CreateFormInput = z.infer<typeof createFormSchema>;
+export type SubmitResponseInput = z.infer<typeof submitResponseSchema>;
+export type QuestionInputSchema = z.infer<typeof questionSchema>;

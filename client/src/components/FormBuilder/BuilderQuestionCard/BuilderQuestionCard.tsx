@@ -1,14 +1,13 @@
 import type { ChangeEvent, ReactElement } from "react";
-import Select, { type SingleValue } from "react-select";
+import { type SingleValue } from "react-select";
 
 import { QuestionType, type DraftQuestion } from "@types";
-
 import styles from "./BuilderQuestionCard.module.css";
-
 import { QUESTION_TYPE_OPTIONS, type QuestionTypeOption } from "@config/formConfig";
 
-import OptionManager from "@components/FormBuilder/OptionManager/OptionManager";
-import QuestionFooter from "@components/FormBuilder/OptionFooter/QuestionFooter";
+import OptionManager from "@/components/FormBuilder/BuilderQuestionCard/OptionManager/OptionManager";
+import QuestionFooter from "@/components/FormBuilder/BuilderQuestionCard/OptionFooter/QuestionFooter";
+import QuestionHeader from "@/components/FormBuilder/BuilderQuestionCard/QuestionHeader/QuestionHeader";
 
 export interface QuestionActions {
   updateQuestion: <K extends keyof Omit<DraftQuestion, "tempId" | "options">>(
@@ -31,9 +30,7 @@ const BuilderQuestionCard = ({
   question,
   actions,
 }: BuilderQuestionCardProps): ReactElement => {
-  const showOptions =
-    question.type === QuestionType.MultipleChoice ||
-    question.type === QuestionType.Checkbox;
+  const showOptions = question.type === QuestionType.MultipleChoice || question.type === QuestionType.Checkbox;
 
   const handleTextChange = (event: ChangeEvent<HTMLInputElement>) => {
     actions.updateQuestion(question.tempId, "text", event.target.value);
@@ -53,24 +50,12 @@ const BuilderQuestionCard = ({
 
   return (
     <div className={styles.questionCard}>
-      <div className={styles.questionHeader}>
-        <input
-          className={styles.input}
-          value={question.text}
-          onChange={handleTextChange}
-          placeholder="Question Text"
-        />
-
-        <div className={styles.selectWrapper}>
-          <Select
-            value={selectedOption}
-            onChange={handleTypeChange}
-            options={QUESTION_TYPE_OPTIONS}
-            classNamePrefix="form-select"
-          />
-        </div>
-      </div>
-
+      <QuestionHeader
+        questionText={question.text}
+        onTextChange={handleTextChange}
+        selectedType={selectedOption}
+        onTypeChange={handleTypeChange}
+      />
       {showOptions && (
         <OptionManager
           questionId={question.tempId}

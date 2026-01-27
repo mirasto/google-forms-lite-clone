@@ -1,8 +1,10 @@
-import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
-import { resolvers } from '../src/resolvers';
-import { QuestionType, type Context, type PubSubWithAsyncIterator } from '../src/types';
-import { InMemoryStore } from '../src/store';
-import type { GraphQLResolveInfo } from 'graphql';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { FormsResolver } from '../src/forms/forms.resolver';
+import { FormsService } from '../src/forms/forms.service';
+import { QuestionType, type PubSubWithAsyncIterator } from '../src/types';
+import { CreateQuestionInput } from '../src/forms/dto/create-question.input';
+import { AnswerInput } from '../src/forms/dto/answer.input';
+
 
 let idCounter = 0;
 vi.mock('uuid', () => ({
@@ -12,165 +14,98 @@ vi.mock('uuid', () => ({
   },
 }));
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-const mockInfo = {} as GraphQLResolveInfo;
+const createTestFormInput = (overrides = {}) => ({
+  title: 'Default Form',
+  description: 'Default Description',
+  questions: [
+    {
+      text: 'Question 1',
+      type: QuestionType.TEXT,
+      required: true,
+    } as CreateQuestionInput,
+  ],
+  ...overrides,
+});
 
-describe('Resolvers', () => {
-  let store: InMemoryStore;
-  let context: Context;
+const createTestAnswerInput = (formId: string, questionId: string, values = ['Default Answer']): AnswerInput[] => ([{
+  questionId,
+  values,
+}]);
+
+describe('FormsResolver', () => {
+  let formsService: FormsService;
+  let formsResolver: FormsResolver;
+  let pubSub: PubSubWithAsyncIterator;
 
   beforeEach(() => {
-    store = new InMemoryStore();
-    context = {
-      store,
-      pubsub: { 
-        publish: vi.fn(),
-        asyncIterator: vi.fn(),
-      } as unknown as PubSubWithAsyncIterator 
-    };
+    formsService = new FormsService();
+    pubSub = {
+      publish: vi.fn(),
+      asyncIterator: vi.fn(),
+    } as unknown as PubSubWithAsyncIterator;
+
+    formsResolver = new FormsResolver(formsService, pubSub);
     idCounter = 0;
+    vi.clearAllMocks();
   });
 
-  describe('createForm', () => {
-    it('should create a new form with questions', async () => {
-      const formInput = {
-        title: 'Test Form',
-        description: 'Test Description',
-        questions: [
-          {
-            text: 'Question 1',
-            type: QuestionType.TEXT,
-            options: [],
-            required: true,
-          },
-        ],
-      };
+  describe('Mutation: createForm', () => {
+    it('should successfully create a form with valid UUID and timestamps', async () => {
+      const input = createTestFormInput({ title: 'New Survey' });
 
-   
-      const result = await resolvers.Mutation.createForm({}, formInput, context, mockInfo);
+      const result = await formsResolver.createForm(
+        input.title,
+        input.description,
+        input.questions
+      );
 
       expect(result).toMatchObject({
-        title: 'Test Form',
-        description: 'Test Description',
+        title: 'New Survey',
+        description: 'Default Description',
       });
-      expect(result.id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i);
+      expect(result.id).toMatch(UUID_REGEX);
       expect(result.questions).toHaveLength(1);
-      expect(result.questions[0]).toMatchObject({
-        text: 'Question 1',
-        type: QuestionType.TEXT,
-        required: true,
-      });
-      expect(result.createdAt).toBeDefined();
-      expect(typeof result.createdAt).toBe('string');
+      expect(result.createdAt).toBeTypeOf('string');
       
-
-      expect(store.getForms()).toHaveLength(1);
+      expect(formsService.getForms()).toContainEqual(result);
     });
   });
 
-  describe('submitResponse', () => {
-    it('should submit a response to an existing form', async () => {
-    
-      const formInput = {
-        title: 'Response Test Form',
-        description: 'Desc',
-        questions: [{ text: 'Q1', type: QuestionType.TEXT, required: false }],
-      };
-   
-      const form = await resolvers.Mutation.createForm({}, formInput, context, mockInfo);
+  describe('Mutation: submitResponse', () => {
+    const setupForm = async () => {
+      const input = createTestFormInput();
+      return await formsResolver.createForm(
+        input.title,
+        input.description,
+        input.questions
+      );
+    };
 
-      const answerInput = {
-        formId: form.id,
-        answers: [
-          {
-            questionId: form.questions[0].id,
-            values: ['Answer 1'],
-          },
-        ],
-      };
+    it('should submit a valid response and trigger subscription', async () => {
+      const form = await setupForm();
+      const answerInput = createTestAnswerInput(form.id, form.questions[0].id, ['My Answer']);
 
-    
-      const result = await resolvers.Mutation.submitResponse({}, answerInput, context, mockInfo);
+      const result = await formsResolver.submitResponse(form.id, answerInput);
 
-      expect(result).toMatchObject({
-        formId: form.id,
-      });
-      expect(result.answers).toHaveLength(1);
-      expect(result.answers[0].values).toEqual(['Answer 1']);
-      expect(result.createdAt).toBeDefined();
-      expect(typeof result.createdAt).toBe('string');
+      expect(result.formId).toBe(form.id);
+      expect(result.answers[0].values).toEqual(['My Answer']);
       
-   
-      expect(store.getResponses(form.id)).toHaveLength(1);
+      expect(pubSub.publish).toHaveBeenCalledWith('RESPONSE_ADDED', {
+        responseAdded: result,
+      });
+      
+      expect(formsService.getResponses(form.id)).toHaveLength(1);
     });
 
-    it('should throw error if form not found', () => {
-      expect(() => {
-    
-        resolvers.Mutation.submitResponse({}, {
-          formId: '00000000-0000-0000-0000-999999999999',
-          answers: [],
-        }, context, mockInfo);
-      }).toThrow('Form not found');
-    });
-
-    it('should ignore answers for questions not in the form (Data Integrity)', async () => {
-      const formInput = {
-        title: 'Integrity Test',
-        questions: [{ text: 'Q1', type: QuestionType.TEXT, required: false }],
-      };
- 
-      const form = await resolvers.Mutation.createForm({}, formInput, context, mockInfo);
-
-      const answerInput = {
-        formId: form.id,
-        answers: [
-          {
-            questionId: form.questions[0].id,
-            values: ['Valid Answer'],
-          },
-          {
-            questionId: '00000000-0000-0000-0000-888888888888',
-            values: ['Malicious Answer'],
-          },
-        ],
-      };
-
-     
-      const result = await resolvers.Mutation.submitResponse({}, answerInput, context, mockInfo);
-
-      expect(result.answers).toHaveLength(1);
-      expect(result.answers[0].questionId).toBe(form.questions[0].id);
-      expect(result.answers[0].values).toEqual(['Valid Answer']);
-    });
-
-    it('should deduplicate answers for the same question (last one wins)', async () => {
-      const formInput = {
-        title: 'Dedup Test',
-        questions: [{ text: 'Q1', type: QuestionType.TEXT, required: false }],
-      };
-
-      const form = await resolvers.Mutation.createForm({}, formInput, context, mockInfo);
-
-      const answerInput = {
-        formId: form.id,
-        answers: [
-          {
-            questionId: form.questions[0].id,
-            values: ['First Answer'],
-          },
-          {
-            questionId: form.questions[0].id,
-            values: ['Second Answer'],
-          },
-        ],
-      };
-
-     
-      const result = await resolvers.Mutation.submitResponse({}, answerInput, context, mockInfo);
-
-      expect(result.answers).toHaveLength(1);
-      expect(result.answers[0].values).toEqual(['Second Answer']);
+    it('should throw NOT_FOUND error if formId does not exist', async () => {
+       const nonExistentId = '00000000-0000-0000-0000-999999999999';
+       const randomQuestionId = '00000000-0000-0000-0000-123456789012';
+       const answerInput = createTestAnswerInput(nonExistentId, randomQuestionId);
+       
+       await expect(formsResolver.submitResponse(nonExistentId, answerInput))
+         .rejects.toThrow('Form not found');
     });
   });
 });

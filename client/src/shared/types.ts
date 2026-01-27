@@ -48,6 +48,12 @@ export function isQuestionType(value: unknown): value is QuestionType {
 
 export function isQuestion(value: unknown): value is Question {
   if (typeof value !== 'object' || value === null) return false;
-  const question = value as Question;
-  return typeof question.id === 'string' && typeof question.text === 'string' && isQuestionType(question.type);
+  
+  const candidate = value as Record<string, unknown>;
+  
+  return (
+    typeof candidate.id === 'string' &&
+    typeof candidate.text === 'string' &&
+    isQuestionType(candidate.type)
+  );
 }

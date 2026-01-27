@@ -2,9 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-
 import { useCreateFormMutation } from '@store/api.enhanced';
-
 import { type DraftQuestion } from '@types';
 
 import { API_MESSAGES } from '@constants';
@@ -89,7 +87,6 @@ export const useFormBuilder = () => {
       await createForm({ title, description, questions: formattedQuestions }).unwrap();
       navigate('/');
     } catch (error) {
-      console.error('Failed to create form', error);
       if (error instanceof Error) {
         Notify.failure(error.message);
       } else {

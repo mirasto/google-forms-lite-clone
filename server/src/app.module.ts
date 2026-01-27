@@ -2,18 +2,24 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { ApolloServerPlugin } from '@apollo/server';
+import { print } from 'graphql'; 
 import { FormsModule } from './forms/forms.module.js';
 import { typeDefs } from './schema.js';
-import { print } from 'graphql';
+
+
+const apolloPlugins: ApolloServerPlugin[] = [
+  ApolloServerPluginLandingPageLocalDefault(),
+];
 
 @Module({
   imports: [
     FormsModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      typeDefs: print(typeDefs),
+      typeDefs: print(typeDefs), 
       playground: false,
-      plugins: [ApolloServerPluginLandingPageLocalDefault()],
+      plugins: apolloPlugins as ApolloDriverConfig['plugins'],
       path: '/',
       subscriptions: {
         'graphql-ws': true,

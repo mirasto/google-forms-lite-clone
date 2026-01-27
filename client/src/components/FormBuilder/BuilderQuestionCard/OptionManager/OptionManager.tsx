@@ -2,7 +2,7 @@ import type { ReactElement } from "react";
 import { type QuestionType, type DraftOption } from "@types";
 
 import styles from "./OptionManager.module.css";
-import OptionItem from "../OptionItem/OptionItem";
+import OptionItem from "../../OptionItem/OptionItem";
 
 export interface OptionManagerProps {
   questionId: string;

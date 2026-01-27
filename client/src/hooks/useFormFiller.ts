@@ -87,8 +87,7 @@ export const useFormFiller = () => {
         formId: form.id,
         answers: answersList,
       }).unwrap();
-    } catch (error) {
-      console.error('Failed to submit response', error);
+    } catch {
       Notify.failure(API_MESSAGES.SUBMIT_ERROR);
     }
   };

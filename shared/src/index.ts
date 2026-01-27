@@ -1,3 +1,6 @@
+/**
+ * Supported question types as a read-only object for type safety and runtime checks.
+ */
 export const QuestionType = {
   TEXT: 'TEXT',
   MULTIPLE_CHOICE: 'MULTIPLE_CHOICE',
@@ -5,60 +8,82 @@ export const QuestionType = {
   DATE: 'DATE',
 } as const;
 
-export type QuestionType = keyof typeof QuestionType;
+export type QuestionType = (typeof QuestionType)[keyof typeof QuestionType];
 
+/**
+ * Represents a choice option for MULTIPLE_CHOICE or CHECKBOX questions.
+ */
 export interface Option {
-  id: string;
-  value: string;
+  readonly id: string;
+  readonly value: string;
 }
 
-export interface Question {
-  id: string;
-  text: string;
-  type: QuestionType;
-  options?: Option[];
-  required: boolean;
+/**
+ * Base properties shared by all question types.
+ */
+interface QuestionBase {
+  readonly id: string;
+  readonly text: string;
+  readonly required: boolean;
 }
+
+export interface TextQuestion extends QuestionBase {
+  readonly type: typeof QuestionType.TEXT;
+  readonly options?: never;
+}
+
+export interface DateQuestion extends QuestionBase {
+  readonly type: typeof QuestionType.DATE;
+  readonly options?: never;
+}
+
+export interface ChoiceQuestion extends QuestionBase {
+  readonly type: typeof QuestionType.MULTIPLE_CHOICE | typeof QuestionType.CHECKBOX;
+  readonly options: readonly Option[];
+}
+export type Question = TextQuestion | DateQuestion | ChoiceQuestion;
 
 export interface Form {
-  id: string;
-  title: string;
-  description?: string | null;
-  questions: Question[];
-  createdAt: string;
+  readonly id: string;
+  readonly title: string;
+  readonly description?: string; 
+  readonly questions: readonly Question[];
+  readonly createdAt: string;
 }
 
 export interface Answer {
-  questionId: string;
-  values: string[];
+  readonly questionId: string;
+  readonly values: readonly string[];
 }
 
 export interface Response {
-  id: string;
-  formId: string;
-  answers: Answer[];
-  createdAt: string;
+  readonly id: string;
+  readonly formId: string;
+  readonly answers: readonly Answer[];
+  readonly createdAt: string;
 }
+export type OptionInput = Omit<Option, 'id'> & { id?: string };
 
-export interface QuestionInput {
-  text: string;
-  type: QuestionType;
-  options?: Option[];
-  required: boolean;
-}
+export type QuestionInput =
+  | (Omit<TextQuestion, 'id' | 'options'> & { id?: string; options?: never })
+  | (Omit<DateQuestion, 'id' | 'options'> & { id?: string; options?: never })
+  | (Omit<ChoiceQuestion, 'id' | 'options'> & { id?: string; options: OptionInput[] });
 
 export interface CreateFormInput {
-  title: string;
-  description?: string | null;
-  questions: QuestionInput[];
+  readonly title: string;
+  readonly description?: string;
+  readonly questions: readonly QuestionInput[];
 }
 
 export interface AnswerInput {
-  questionId: string;
-  values: string[];
+  readonly questionId: string;
+  readonly values: readonly string[];
 }
 
 export interface SubmitResponseInput {
-  formId: string;
-  answers: AnswerInput[];
+  readonly formId: string;
+  readonly answers: readonly AnswerInput[];
+}
+export function assertNever(x: never): never {
+  throw new Error(`Unexpected value: ${JSON.stringify(x)}`);
 }

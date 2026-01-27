@@ -1,9 +1,9 @@
 import type { ReactElement } from "react";
 
-import { type Question, QuestionType } from "@types";
+import { type Question } from "@types";
 import styles from "./FormQuestions.module.css";
 
-import { TextInput, DateInput, ChoiceInput } from "../QuestionsInput/QuestionsInput";
+import { renderInput } from "./InputRender/InputRenderer";
 
 interface FormQuestionsProps {
   question: Question;
@@ -20,61 +20,11 @@ const FormQuestions = ({
   handleInputChange,
   handleCheckboxChange
 }: FormQuestionsProps): ReactElement => {
+
   const error = errors[question.id];
   const labelId = `question-label-${question.id}`;
   const currentValue = answers?.[0] || "";
   const hasError = error !== undefined;
-
-  const renderInput = (): ReactElement | null => {
-    switch (question.type) {
-      case QuestionType.Text:
-        return (
-          <TextInput
-            id={question.id}
-            value={currentValue}
-            onChange={handleInputChange}
-            hasError={hasError}
-            labelledBy={labelId}
-          />
-        );
-      case QuestionType.Date:
-        return (
-          <DateInput
-            id={question.id}
-            value={currentValue}
-            onChange={handleInputChange}
-            hasError={hasError}
-            labelledBy={labelId}
-          />
-        );
-      case QuestionType.MultipleChoice:
-        return (
-          <ChoiceInput
-            id={question.id}
-            options={question.options || []}
-            selectedValues={answers || []}
-            type="RADIO"
-            onChange={handleInputChange}
-            hasError={hasError}
-            labelledBy={labelId}
-          />
-        );
-      case QuestionType.Checkbox:
-        return (
-          <ChoiceInput
-            id={question.id}
-            options={question.options || []}
-            selectedValues={answers || []}
-            type="CHECKBOX"
-            onChange={handleCheckboxChange}
-            hasError={hasError}
-            labelledBy={labelId}
-          />
-        );
-      default:
-        return null;
-    }
-  };
 
   return (
     <div
@@ -89,7 +39,15 @@ const FormQuestions = ({
       </div>
 
       <div className={styles.inputWrapper}>
-        {renderInput()}
+        {renderInput({
+          question,
+          answers,
+          hasError,
+          labelId,
+          currentValue,
+          handleInputChange,
+          handleCheckboxChange,
+        })}
       </div>
 
       {error && (
