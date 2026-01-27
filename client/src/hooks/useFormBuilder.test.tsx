@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react';
 import { describe, test, expect, vi, beforeEach } from 'vitest';
-import { useFormBuilder } from '../hooks/useFormBuilder';
+import { useFormBuilder } from './useFormBuilder';
 import { QuestionType } from '@types';
 import * as reactRouterDom from 'react-router-dom';
 import type { Mock } from 'vitest';

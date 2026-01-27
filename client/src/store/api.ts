@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { graphqlRequestBaseQuery } from '@rtk-query/graphql-request-base-query';
-import type { Form, Response, CreateFormInput, SubmitResponseInput } from '../type';
+import type { Form, Response, CreateFormInput, SubmitResponseInput } from '@types';
 import { GraphQLClient } from 'graphql-request';
 
 const API_URL = 'http://localhost:4000/';

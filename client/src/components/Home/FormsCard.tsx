@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import type { Form } from '../../type';
+import type { Form } from '@types';
 import styles from './FormsCard.module.css';
 
 interface FormsCardProps {

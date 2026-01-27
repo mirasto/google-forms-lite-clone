@@ -1,5 +1,3 @@
-
-
 export const QuestionType = {
   TEXT: 'TEXT',
   MULTIPLE_CHOICE: 'MULTIPLE_CHOICE',
@@ -47,10 +45,22 @@ export interface QuestionInput {
   required?: boolean;
 }
 
+export interface CreateFormInput {
+  title: string;
+  description?: string;
+  questions: QuestionInput[];
+}
+
 export interface AnswerInput {
   questionId: string;
   values: string[];
 }
+
+export interface SubmitResponseInput {
+  formId: string;
+  answers: AnswerInput[];
+}
+
 export type ResolverFn<TResult, TParent, TContext, TArgs> = (
   parent: TParent,
   args: TArgs,

@@ -1,4 +1,4 @@
-import { type Answer, type Form } from "../../type";
+import { type Answer, type Form } from "@types";
 import styles from "./ResponsesAnswer.module.css";
 
 interface ResponsesAnswerProps {

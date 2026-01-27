@@ -1,7 +1,7 @@
-import { type Question } from "../../type";
+import { type Question } from "@types";
 import styles from "./FormQuestions.module.css";
 import { TextInput, DateInput, ChoiceInput } from "./QuestionsInput";
-import { QuestionType } from "../../type";
+import { QuestionType } from "@types";
 
 interface FormQuestionsProps {
   question: Question;

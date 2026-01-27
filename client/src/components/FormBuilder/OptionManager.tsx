@@ -1,4 +1,4 @@
-import { QuestionType, type DraftOption } from "../../type";
+import { QuestionType, type DraftOption } from "@types";
 import styles from "./OptionManager.module.css";
 
 interface OptionManagerProps {

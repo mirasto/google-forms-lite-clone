@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { useCreateFormMutation } from '../store/api';
-import { QuestionType, type DraftQuestion } from '../type';
+import { QuestionType, type DraftQuestion } from '@types';
 import { VALIDATION_MESSAGES, API_MESSAGES } from '../constants';
 
 export const useFormBuilder = () => {

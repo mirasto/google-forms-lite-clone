@@ -1,4 +1,4 @@
-import { type Form, type Response } from "../../type";
+import { type Form, type Response } from "@types";
 import ResponsesAnswer from "./ResponsesAnswer";
 import styles from "./ResponsesList.module.css";
 

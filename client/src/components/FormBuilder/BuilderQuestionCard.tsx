@@ -1,5 +1,5 @@
 import { type ChangeEvent } from "react";
-import { QuestionType, type DraftQuestion } from "../../type";
+import { QuestionType, type DraftQuestion } from "@types";
 import styles from "./BuilderQuestionCard.module.css";
 import OptionManager from "./OptionManager";
 

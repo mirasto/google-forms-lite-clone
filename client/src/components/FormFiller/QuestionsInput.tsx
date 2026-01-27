@@ -1,4 +1,4 @@
-import { type Option } from "../../type";
+import { type Option } from "@types";
 import styles from "./QuestionsInput.module.css";
 
 interface InputProps {
