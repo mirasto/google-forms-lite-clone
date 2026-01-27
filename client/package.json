@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@forms/shared": "*",
     "@reduxjs/toolkit": "^2.11.2",
     "@rtk-query/graphql-request-base-query": "^2.3.2",
     "@types/react-select": "^5.0.0",
@@ -22,11 +23,15 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.13.0",
     "react-select": "^5.10.2",
-    "uuid": "^13.0.0",
-    "@forms/shared": "*"
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@graphql-codegen/cli": "^6.1.1",
+    "@graphql-codegen/import-types-preset": "^3.0.1",
+    "@graphql-codegen/typescript": "^5.0.7",
+    "@graphql-codegen/typescript-operations": "^5.0.7",
+    "@graphql-codegen/typescript-rtk-query": "^3.1.2",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",

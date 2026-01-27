@@ -6,9 +6,9 @@ export interface OptionManagerProps {
   questionId: string;
   type: QuestionType;
   options?: DraftOption[];
-  addOption: (qId: string) => void;
-  updateOption: (qId: string, oId: string, value: string) => void;
-  removeOption: (qId: string, oId: string) => void;
+  addOption: (questionId: string) => void;
+  updateOption: (questionId: string, optionId: string, value: string) => void;
+  removeOption: (questionId: string, optionId: string) => void;
 }
 
 const OptionManager = ({
@@ -19,8 +19,8 @@ const OptionManager = ({
   updateOption,
   removeOption,
 }: OptionManagerProps): ReactElement => {
-  const handleOptionChange = (e: ChangeEvent<HTMLInputElement>, optionId: string) => {
-    updateOption(questionId, optionId, e.target.value);
+  const handleOptionChange = (event: ChangeEvent<HTMLInputElement>, optionId: string) => {
+    updateOption(questionId, optionId, event.target.value);
   };
 
   return (
@@ -28,7 +28,7 @@ const OptionManager = ({
       {options?.map((option, optionIndex) => (
         <div key={option.id} className={styles.optionRow}>
           <input
-            type={type === QuestionType.MULTIPLE_CHOICE ? "radio" : "checkbox"}
+            type={type === QuestionType.MultipleChoice ? "radio" : "checkbox"}
             className={styles.markingInput}
             disabled
             aria-hidden="true"
@@ -36,7 +36,7 @@ const OptionManager = ({
           <input
             className={styles.input}
             value={option.value}
-            onChange={(e) => handleOptionChange(e, option.id)}
+            onChange={(event) => handleOptionChange(event, option.id)}
             placeholder={`Option ${optionIndex + 1}`}
           />
           <button

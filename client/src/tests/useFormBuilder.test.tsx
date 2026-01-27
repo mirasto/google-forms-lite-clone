@@ -57,7 +57,7 @@ describe('useFormBuilder', () => {
       result.current.setTitle('Test Form');
       const qId = result.current.questions[0].tempId;
       result.current.updateQuestion(qId, 'text', 'Question 1');
-      result.current.updateQuestion(qId, 'type', QuestionType.MULTIPLE_CHOICE);
+      result.current.updateQuestion(qId, 'type', QuestionType.MultipleChoice);
     });
 
     act(() => {
@@ -78,25 +78,25 @@ describe('useFormBuilder', () => {
 
     act(() => {
       result.current.setTitle('Test Form');
-      const qId = result.current.questions[0].tempId;
-      result.current.updateQuestion(qId, 'text', 'Question 1');
-      result.current.updateQuestion(qId, 'type', QuestionType.MULTIPLE_CHOICE);
+      const questionId = result.current.questions[0].tempId;
+      result.current.updateQuestion(questionId, 'text', 'Question 1');
+      result.current.updateQuestion(questionId, 'type', QuestionType.MultipleChoice);
     });
 
     act(() => {
-      const qId = result.current.questions[0].tempId;
-      result.current.addOption(qId);
+      const questionId = result.current.questions[0].tempId;
+      result.current.addOption(questionId);
     });
 
     act(() => {
-      const qId = result.current.questions[0].tempId;
-      const oId = result.current.questions[0].options![0].id;
-      result.current.updateOption(qId, oId, 'Option A');
+      const questionId = result.current.questions[0].tempId;
+      const optionId = result.current.questions[0].options![0].id;
+      result.current.updateOption(questionId, optionId, 'Option A');
     });
 
     act(() => {
-      const qId = result.current.questions[0].tempId;
-      result.current.addOption(qId);
+      const questionId = result.current.questions[0].tempId;
+      result.current.addOption(questionId);
     });
 
     await act(async () => {
@@ -109,7 +109,7 @@ describe('useFormBuilder', () => {
       questions: expect.arrayContaining([
         expect.objectContaining({
           text: 'Question 1',
-          type: QuestionType.MULTIPLE_CHOICE,
+          type: QuestionType.MultipleChoice,
           options: [{ id: expect.stringMatching(/.+/), value: 'Option A' }]
         })
       ])

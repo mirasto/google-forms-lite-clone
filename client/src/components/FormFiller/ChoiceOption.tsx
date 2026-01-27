@@ -8,7 +8,7 @@ interface ChoiceOptionProps {
   type: "RADIO" | "CHECKBOX";
   isSelected: boolean;
   hasError: boolean;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const ChoiceOption = ({

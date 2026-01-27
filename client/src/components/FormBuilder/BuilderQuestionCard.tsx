@@ -12,9 +12,9 @@ export interface QuestionActions {
     value: DraftQuestion[K]
   ) => void;
   removeQuestion: (id: string) => void;
-  addOption: (qId: string) => void;
-  updateOption: (qId: string, oId: string, value: string) => void;
-  removeOption: (qId: string, oId: string) => void;
+  addOption: (questionId: string) => void;
+  updateOption: (questionId: string, optionId: string, value: string) => void;
+  removeOption: (questionId: string, optionId: string) => void;
 }
 
 export interface BuilderQuestionCardProps {
@@ -27,11 +27,11 @@ const BuilderQuestionCard = ({
   actions,
 }: BuilderQuestionCardProps): ReactElement => {
   const showOptions =
-    question.type === QuestionType.MULTIPLE_CHOICE ||
-    question.type === QuestionType.CHECKBOX;
+    question.type === QuestionType.MultipleChoice ||
+    question.type === QuestionType.Checkbox;
 
-  const handleTextChange = (e: ChangeEvent<HTMLInputElement>) => {
-    actions.updateQuestion(question.tempId, "text", e.target.value);
+  const handleTextChange = (event: ChangeEvent<HTMLInputElement>) => {
+    actions.updateQuestion(question.tempId, "text", event.target.value);
   };
 
   const handleTypeChange = (newValue: SingleValue<QuestionTypeOption>) => {
@@ -40,8 +40,8 @@ const BuilderQuestionCard = ({
     }
   };
 
-  const handleRequiredChange = (e: ChangeEvent<HTMLInputElement>) => {
-    actions.updateQuestion(question.tempId, 'required', e.target.checked);
+  const handleRequiredChange = (event: ChangeEvent<HTMLInputElement>) => {
+    actions.updateQuestion(question.tempId, 'required', event.target.checked);
   };
 
   const selectedOption: QuestionTypeOption | undefined = QUESTION_TYPE_OPTIONS.find(option => option.value === question.type);

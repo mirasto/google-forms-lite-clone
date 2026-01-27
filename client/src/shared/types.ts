@@ -1,15 +1,21 @@
+import React from 'react';
+import { store } from '../store/store';
 import {
   QuestionType,
+  type Form,
+  type Response,
   type Question,
   type Option,
-  type Form,
   type Answer,
-  type Response,
   type QuestionInput,
-  type CreateFormInput,
   type AnswerInput,
-  type SubmitResponseInput,
-} from '@forms/shared';
+  type CreateFormMutationVariables,
+  type SubmitResponseMutationVariables
+} from '../store/api.generated';
+
+// Re-export aliases to match previous usage
+export type CreateFormInput = CreateFormMutationVariables;
+export type SubmitResponseInput = SubmitResponseMutationVariables;
 
 export { QuestionType };
 export type {
@@ -19,12 +25,8 @@ export type {
   Answer,
   Response,
   QuestionInput,
-  CreateFormInput,
   AnswerInput,
-  SubmitResponseInput,
 };
-import React from 'react';
-import { store } from '../store/store';
 
 export interface Props {
   children?: React.ReactNode;
@@ -48,6 +50,6 @@ export function isQuestionType(value: unknown): value is QuestionType {
 
 export function isQuestion(value: unknown): value is Question {
   if (typeof value !== 'object' || value === null) return false;
-  const q = value as Question;
-  return typeof q.id === 'string' && typeof q.text === 'string' && isQuestionType(q.type);
+  const question = value as Question;
+  return typeof question.id === 'string' && typeof question.text === 'string' && isQuestionType(question.type);
 }

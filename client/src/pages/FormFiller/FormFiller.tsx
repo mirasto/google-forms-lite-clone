@@ -58,7 +58,7 @@ const FormFiller = (): ReactElement => {
         
       </header>
 
-      <form className={styles.questionsList} onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
+      <form className={styles.questionsList} onSubmit={(event) => { event.preventDefault(); handleSubmit(); }}>
         {form.questions.map((question) => (
           <FormQuestions
             key={question.id}

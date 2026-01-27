@@ -8,9 +8,9 @@ export const validateForm = (title: string, questions: DraftQuestion[]): string 
     for (const question of questions) {
         if (!question.text.trim()) return VALIDATION_MESSAGES.EMPTY_QUESTION_TEXT;
 
-        const isChoiceType = question.type === QuestionType.MULTIPLE_CHOICE || question.type === QuestionType.CHECKBOX;
+        const isChoiceType = question.type === QuestionType.MultipleChoice || question.type === QuestionType.Checkbox;
         if (isChoiceType) {
-            const hasValidOptions = question.options?.some((opt) => opt.value.trim());
+            const hasValidOptions = question.options?.some((option) => option.value.trim());
             if (!hasValidOptions) return VALIDATION_MESSAGES.MIN_ONE_OPTION;
         }
     }

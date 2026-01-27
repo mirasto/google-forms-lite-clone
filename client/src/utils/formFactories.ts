@@ -4,7 +4,7 @@ import { QuestionType, type DraftQuestion, type DraftOption } from '@types';
 export const createDraftQuestion = (overrides: Partial<DraftQuestion> = {}): DraftQuestion => ({
     tempId: uuidv4(),
     text: '',
-    type: QuestionType.TEXT,
+    type: QuestionType.Text,
     options: [],
     required: false,
     ...overrides,

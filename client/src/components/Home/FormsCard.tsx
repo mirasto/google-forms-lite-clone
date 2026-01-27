@@ -4,7 +4,7 @@ import type { ReactElement } from 'react';
 import styles from './FormsCard.module.css';
 
 interface FormsCardProps {
-  form: Form;
+  form: Pick<Form, 'id' | 'title' | 'description'>;
 }
 
 const FormsCard = ({ form }: FormsCardProps): ReactElement => {

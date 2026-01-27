@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import { useCreateFormMutation } from '../store/api';
+import { useCreateFormMutation } from '../store/api.enhanced';
 import { type DraftQuestion } from '@types';
 import { API_MESSAGES } from '@constants';
 import { createDraftQuestion, createDraftOption } from '../utils/formFactories';
@@ -19,7 +19,7 @@ export const useFormBuilder = () => {
   ]);
 
   const addQuestion = (): void => {
-    setQuestions((prev) => [...prev, createDraftQuestion()]);
+    setQuestions((prevQuestions) => [...prevQuestions, createDraftQuestion()]);
   };
 
   const updateQuestion = <K extends keyof Omit<DraftQuestion, 'tempId' | 'options'>>(
@@ -27,47 +27,47 @@ export const useFormBuilder = () => {
     field: K,
     value: DraftQuestion[K]
   ): void => {
-    setQuestions((prev) => 
-      prev.map((q) => (q.tempId === id ? { ...q, [field]: value } : q))
+    setQuestions((prevQuestions) => 
+      prevQuestions.map((question) => (question.tempId === id ? { ...question, [field]: value } : question))
     );
   };
 
   const removeQuestion = (id: string): void => {
-    setQuestions((prev) => prev.filter((q) => q.tempId !== id));
+    setQuestions((prevQuestions) => prevQuestions.filter((question) => question.tempId !== id));
   };
 
-  const addOption = (qId: string): void => {
-    setQuestions((prev) => 
-      prev.map((q) => 
-        q.tempId === qId 
-          ? { ...q, options: [...(q.options || []), createDraftOption()] }
-          : q
+  const addOption = (questionId: string): void => {
+    setQuestions((prevQuestions) => 
+      prevQuestions.map((question) => 
+        question.tempId === questionId 
+          ? { ...question, options: [...(question.options || []), createDraftOption()] }
+          : question
       )
     );
   };
 
-  const updateOption = (qId: string, oId: string, value: string): void => {
-    setQuestions((prev) => 
-      prev.map((q) => 
-        q.tempId === qId && q.options
+  const updateOption = (questionId: string, optionId: string, value: string): void => {
+    setQuestions((prevQuestions) => 
+      prevQuestions.map((question) => 
+        question.tempId === questionId && question.options
           ? {
-              ...q,
-              options: q.options.map((o) => (o.id === oId ? { ...o, value } : o)),
+              ...question,
+              options: question.options.map((option) => (option.id === optionId ? { ...option, value } : option)),
             }
-          : q
+          : question
       )
     );
   };
 
-  const removeOption = (qId: string, oId: string): void => {
-    setQuestions((prev) => 
-      prev.map((q) => 
-        q.tempId === qId && q.options
+  const removeOption = (questionId: string, optionId: string): void => {
+    setQuestions((prevQuestions) => 
+      prevQuestions.map((question) => 
+        question.tempId === questionId && question.options
           ? {
-              ...q,
-              options: q.options.filter((o) => o.id !== oId),
+              ...question,
+              options: question.options.filter((option) => option.id !== optionId),
             }
-          : q
+          : question
       )
     );
   };
@@ -83,10 +83,10 @@ export const useFormBuilder = () => {
       const formattedQuestions = formatQuestionsForSubmission(questions);
       await createForm({ title, description, questions: formattedQuestions }).unwrap();
       navigate('/');
-    } catch (err) {
-      console.error('Failed to create form', err);
-      if (err instanceof Error) {
-        Notify.failure(err.message);
+    } catch (error) {
+      console.error('Failed to create form', error);
+      if (error instanceof Error) {
+        Notify.failure(error.message);
       } else {
         Notify.failure(API_MESSAGES.CREATE_ERROR);
       }

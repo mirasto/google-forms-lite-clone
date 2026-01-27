@@ -19,7 +19,7 @@ export const TextInput = ({ id, value, onChange, hasError, labelledBy }: InputPr
       type="text"
       placeholder="Your answer"
       value={value}
-      onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(id, e.target.value)}
+      onChange={(event: ChangeEvent<HTMLInputElement>) => onChange(id, event.target.value)}
       aria-invalid={hasError}
       aria-labelledby={labelledBy}
     />
@@ -34,7 +34,7 @@ export const DateInput = ({ id, value, onChange, hasError, labelledBy }: InputPr
       className={`${styles.dateInput} ${hasError ? styles.dateInputError : ""}`}
       type="date"
       value={value}
-      onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(id, e.target.value)}
+      onChange={(event: ChangeEvent<HTMLInputElement>) => onChange(id, event.target.value)}
       aria-invalid={hasError}
       aria-labelledby={labelledBy}
     />
@@ -68,9 +68,9 @@ export const ChoiceInput = (props: ChoiceProps): ReactElement => {
           type={props.type}
           isSelected={selectedValues.includes(option.value)}
           hasError={hasError}
-          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+          onChange={(event: ChangeEvent<HTMLInputElement>) => {
             if (props.type === "CHECKBOX") {
-              props.onChange(id, option.value, e.target.checked);
+              props.onChange(id, option.value, event.target.checked);
             } else {
               props.onChange(id, option.value);
             }

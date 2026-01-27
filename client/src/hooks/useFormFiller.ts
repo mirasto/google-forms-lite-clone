@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import { useGetFormQuery, useSubmitResponseMutation } from '../store/api';
+import { useGetFormQuery, useSubmitResponseMutation } from '../store/api.enhanced';
 import { VALIDATION_MESSAGES, API_MESSAGES } from '@constants';
 
 export const useFormFiller = () => {
   const { id } = useParams<{ id: string }>();
-  const { data: form, isLoading: isFormLoading, error: formError } = useGetFormQuery(id!);
+  const { data, isLoading: isFormLoading, error: formError } = useGetFormQuery({ id: id! });
+  const form = data?.form;
   const [submitResponse, { isLoading: isSubmitting, isSuccess }] = useSubmitResponseMutation();
 
   const [answers, setAnswers] = useState<Record<string, string[]>>({});
@@ -32,12 +33,10 @@ export const useFormFiller = () => {
   const handleCheckboxChange = (questionId: string, value: string, checked: boolean): void => {
     setAnswers((prev) => {
       const currentValues = prev[questionId] || [];
-      let newValues: string[];
-      if (checked) {
-        newValues = [...currentValues, value];
-      } else {
-        newValues = currentValues.filter((existingValue) => existingValue !== value);
-      }
+      const newValues = checked
+        ? [...currentValues, value]
+        : currentValues.filter((existingValue) => existingValue !== value);
+      
       return {
         ...prev,
         [questionId]: newValues,
@@ -56,7 +55,7 @@ export const useFormFiller = () => {
       const answer = answers[question.id];
       if (question.required) {
        
-        const isValid = Array.isArray(answer) && answer.length > 0 && answer.some(val => val.trim() !== '');
+        const isValid = Array.isArray(answer) && answer.length > 0 && answer.some(value => value.trim() !== '');
         
         if (!isValid) {
           newErrors[question.id] = VALIDATION_MESSAGES.REQUIRED_FIELD;
@@ -85,8 +84,8 @@ export const useFormFiller = () => {
         formId: form.id,
         answers: answersList,
       }).unwrap();
-    } catch (err) {
-      console.error('Failed to submit response', err);
+    } catch (error) {
+      console.error('Failed to submit response', error);
       Notify.failure(API_MESSAGES.SUBMIT_ERROR);
     }
   };

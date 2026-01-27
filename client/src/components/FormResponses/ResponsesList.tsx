@@ -10,9 +10,9 @@ interface ResponsesListProps {
 }
 
 const ResponsesList = ({ response, form, index }: ResponsesListProps): ReactElement => {
-  const questionMap = form.questions.reduce<Record<string, string>>((acc, q) => {
-    acc[q.id] = q.text;
-    return acc;
+  const questionTextMap = form.questions.reduce<Record<string, string>>((map, question) => {
+    map[question.id] = question.text;
+    return map;
   }, {});
 
   return (
@@ -23,7 +23,7 @@ const ResponsesList = ({ response, form, index }: ResponsesListProps): ReactElem
           <ResponsesAnswer
             key={answer.questionId}
             answer={answer}
-            questionText={questionMap[answer.questionId] || 'Unknown Question'}
+            questionText={questionTextMap[answer.questionId] || 'Unknown Question'}
           />
         ))}
       </div>

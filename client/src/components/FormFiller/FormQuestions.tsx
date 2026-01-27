@@ -25,7 +25,7 @@ const FormQuestions = ({
 
   const renderInput = (): ReactElement | null => {
     switch (question.type) {
-      case QuestionType.TEXT:
+      case QuestionType.Text:
         return (
           <TextInput
             id={question.id}
@@ -35,7 +35,7 @@ const FormQuestions = ({
             labelledBy={labelId}
           />
         );
-      case QuestionType.DATE:
+      case QuestionType.Date:
         return (
           <DateInput
             id={question.id}
@@ -45,7 +45,7 @@ const FormQuestions = ({
             labelledBy={labelId}
           />
         );
-      case QuestionType.MULTIPLE_CHOICE:
+      case QuestionType.MultipleChoice:
         return (
           <ChoiceInput
             id={question.id}
@@ -57,7 +57,7 @@ const FormQuestions = ({
             labelledBy={labelId}
           />
         );
-      case QuestionType.CHECKBOX:
+      case QuestionType.Checkbox:
         return (
           <ChoiceInput
             id={question.id}

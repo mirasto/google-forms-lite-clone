@@ -1,13 +1,15 @@
 import { Link, useParams } from 'react-router-dom';
 import type { ReactElement } from 'react';
 import ResponsesList from '../../components/FormResponses/ResponsesList';
-import { useGetFormQuery, useGetResponsesQuery } from '../../store/api';
+import { useGetFormQuery, useGetResponsesQuery } from '../../store/api.enhanced';
 import styles from './FormResponses.module.css';
 
 const FormResponses = (): ReactElement => {
   const { id } = useParams<{ id: string }>();
-  const { data: form, isLoading: isFormLoading } = useGetFormQuery(id!);
-  const { data: responses, isLoading: isResponsesLoading } = useGetResponsesQuery(id!);
+  const { data: formData, isLoading: isFormLoading } = useGetFormQuery({ id: id! });
+  const form = formData?.form;
+  const { data: responsesData, isLoading: isResponsesLoading } = useGetResponsesQuery({ formId: id! });
+  const responses = responsesData?.responses;
 
   if (isFormLoading || isResponsesLoading) {
     return (
