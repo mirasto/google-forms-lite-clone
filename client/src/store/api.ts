@@ -3,7 +3,33 @@ import { graphqlRequestBaseQuery } from '@rtk-query/graphql-request-base-query';
 import type { Form, Response, CreateFormInput, SubmitResponseInput } from '../type';
 import { GraphQLClient } from 'graphql-request';
 
-const client = new GraphQLClient('http://localhost:4000/');
+const API_URL = 'http://localhost:4000/';
+const client = new GraphQLClient(API_URL);
+
+const QUESTION_FRAGMENT = `
+  fragment QuestionFields on Question {
+    id
+    text
+    type
+    required
+    options {
+      id
+      value
+    }
+  }
+`;
+
+const FORM_FRAGMENT = `
+  ${QUESTION_FRAGMENT}
+  fragment FormFields on Form {
+    id
+    title
+    description
+    questions {
+      ...QuestionFields
+    }
+  }
+`;
 
 export const api = createApi({
   reducerPath: 'api',
@@ -28,21 +54,10 @@ export const api = createApi({
     getForm: builder.query<Form, string>({
       query: (id) => ({
         document: `
+          ${FORM_FRAGMENT}
           query GetForm($id: ID!) {
             form(id: $id) {
-              id
-              title
-              description
-              questions {
-                id
-                text
-                type
-                options {
-                  id
-                  value
-                }
-                required
-              }
+              ...FormFields
             }
           }
         `,
@@ -73,21 +88,10 @@ export const api = createApi({
     createForm: builder.mutation<Form, CreateFormInput>({
       query: (input) => ({
         document: `
+          ${FORM_FRAGMENT}
           mutation CreateForm($title: String!, $description: String, $questions: [QuestionInput]) {
             createForm(title: $title, description: $description, questions: $questions) {
-              id
-              title
-              description
-              questions {
-                id
-                text
-                type
-                options {
-                  id
-                  value
-                }
-                required
-              }
+              ...FormFields
             }
           }
         `,

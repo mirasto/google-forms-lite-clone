@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { useGetFormQuery, useSubmitResponseMutation } from '../store/api';
+import { VALIDATION_MESSAGES, API_MESSAGES } from '../constants';
 
 export const useFormFiller = () => {
   const { id } = useParams<{ id: string }>();
@@ -11,12 +12,7 @@ export const useFormFiller = () => {
   const [answers, setAnswers] = useState<Record<string, string[]>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleInputChange = (questionId: string, value: string): void => {
-    setAnswers({
-      ...answers,
-      [questionId]: [value],
-    });
-
+  const clearError = (questionId: string) => {
     if (errors[questionId]) {
       setErrors((prev) => {
         const newErrors = { ...prev };
@@ -26,26 +22,29 @@ export const useFormFiller = () => {
     }
   };
 
-  const handleCheckboxChange = (questionId: string, value: string, checked: boolean): void => {
-    const currentValues = answers[questionId] || [];
-    let newValues: string[];
-    if (checked) {
-      newValues = [...currentValues, value];
-    } else {
-      newValues = currentValues.filter((existingValue) => existingValue !== value);
-    }
-    setAnswers({
-      ...answers,
-      [questionId]: newValues,
-    });
+  const handleInputChange = (questionId: string, value: string): void => {
+    setAnswers((prev) => ({
+      ...prev,
+      [questionId]: [value],
+    }));
+    clearError(questionId);
+  };
 
-    if (errors[questionId]) {
-      setErrors((prev) => {
-        const newErrors = { ...prev };
-        delete newErrors[questionId];
-        return newErrors;
-      });
-    }
+  const handleCheckboxChange = (questionId: string, value: string, checked: boolean): void => {
+    setAnswers((prev) => {
+      const currentValues = prev[questionId] || [];
+      let newValues: string[];
+      if (checked) {
+        newValues = [...currentValues, value];
+      } else {
+        newValues = currentValues.filter((existingValue) => existingValue !== value);
+      }
+      return {
+        ...prev,
+        [questionId]: newValues,
+      };
+    });
+    clearError(questionId);
   };
 
   const handleSubmit = async (): Promise<void> => {
@@ -54,18 +53,16 @@ export const useFormFiller = () => {
     const newErrors: Record<string, string> = {};
     let hasErrors = false;
 
- 
     form.questions.forEach((question) => {
       const answer = answers[question.id];
       if (question.required && (!answer || answer.length === 0 || !answer[0].trim())) {
-        newErrors[question.id] = 'This is a required question';
+        newErrors[question.id] = VALIDATION_MESSAGES.REQUIRED_FIELD;
         hasErrors = true;
       }
     });
 
     if (hasErrors) {
       setErrors(newErrors);
- 
       const firstErrorId = Object.keys(newErrors)[0];
       const element = document.getElementById(`question-${firstErrorId}`);
       if (element) {
@@ -84,10 +81,10 @@ export const useFormFiller = () => {
         formId: form.id,
         answers: answersList,
       }).unwrap();
-      Notify.success('Response submitted successfully!');
+      Notify.success(API_MESSAGES.SUBMIT_SUCCESS);
     } catch (err) {
       console.error('Failed to submit response', err);
-      Notify.failure('Failed to submit response. Please check your connection.');
+      Notify.failure(API_MESSAGES.SUBMIT_ERROR);
     }
   };
 

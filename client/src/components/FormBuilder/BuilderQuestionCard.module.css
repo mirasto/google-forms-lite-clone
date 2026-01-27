@@ -5,13 +5,12 @@
     border: 1px solid #ddd;
     margin-bottom: 15px;
     position: relative;
-    transition: box-shadow 0.3s ease;
 }
 
-.questionCard:focus-within {
+/* .questionCard:focus-within {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border-left: 6px solid #4285f4;
-}
+} */
 
 .questionHeader {
     display: flex;
