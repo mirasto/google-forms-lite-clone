@@ -24,7 +24,7 @@ export type {
   SubmitResponseInput,
 };
 import React from 'react';
-import { store } from './store/store';
+import { store } from '../store/store';
 
 export interface Props {
   children?: React.ReactNode;

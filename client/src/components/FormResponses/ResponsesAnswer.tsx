@@ -1,23 +1,17 @@
-import { type Answer, type Form } from "@types";
+import { type ReactElement } from "react";
+import { type Answer } from "@types";
 import styles from "./ResponsesAnswer.module.css";
 
 interface ResponsesAnswerProps {
   answer: Answer;
-  form: Form;
+  questionText: string;
 }
 
-const ResponsesAnswer = ({ answer, form }: ResponsesAnswerProps) => {
-  const getQuestionText = (questionId: string) => {
-    return (
-      form.questions.find((q) => q.id === questionId)?.text ||
-      'Unknown Question'
-    );
-  };
-
+const ResponsesAnswer = ({ answer, questionText }: ResponsesAnswerProps): ReactElement => {
   return (
     <div className={styles.answerRow}>
       <div className={styles.questionText}>
-        {getQuestionText(answer.questionId)}
+        {questionText}
       </div>
       <div className={styles.answerText}>
         {answer.values.length > 0 ? (

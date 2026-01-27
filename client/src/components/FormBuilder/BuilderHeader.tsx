@@ -1,6 +1,7 @@
+import type { ChangeEvent, ReactElement } from "react";
 import styles from "./BuilderHeader.module.css";
 
-interface BuilderHeaderProps {
+export interface BuilderHeaderProps {
   title: string;
   setTitle: (value: string) => void;
   description: string;
@@ -16,7 +17,15 @@ const BuilderHeader = ({
   setDescription,
   onSave,
   isLoading,
-}: BuilderHeaderProps) => {
+}: BuilderHeaderProps): ReactElement => {
+  const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+  };
+
+  const handleDescriptionChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setDescription(e.target.value);
+  };
+
   return (
     <header className={styles.headerWrapper}>
       <div className={styles.topActions}>
@@ -38,14 +47,14 @@ const BuilderHeader = ({
           className={styles.titleInput}
           type="text"
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={handleTitleChange}
           placeholder="Untitled Form"
         />
 
         <textarea
           className={styles.descriptionInput}
           value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          onChange={handleDescriptionChange}
           placeholder="Form description"
         />
       </div>

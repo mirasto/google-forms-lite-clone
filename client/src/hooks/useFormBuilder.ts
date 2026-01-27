@@ -3,16 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { useCreateFormMutation } from '../store/api';
 import { type DraftQuestion } from '@types';
-import { API_MESSAGES } from '../constants';
+import { API_MESSAGES } from '@constants';
 import { createDraftQuestion, createDraftOption } from '../utils/formFactories';
 import { validateForm } from '../utils/formValidation';
 import { formatQuestionsForSubmission } from '../utils/formFormatters';
-
-const updateAtIndex = <T>(list: T[], index: number, updates: Partial<T>): T[] => {
-  const next = [...list];
-  next[index] = { ...next[index], ...updates };
-  return next;
-};
 
 export const useFormBuilder = () => {
   const navigate = useNavigate();
@@ -29,43 +23,53 @@ export const useFormBuilder = () => {
   };
 
   const updateQuestion = <K extends keyof Omit<DraftQuestion, 'tempId' | 'options'>>(
-    index: number,
+    id: string,
     field: K,
     value: DraftQuestion[K]
   ): void => {
-    setQuestions((prev) => updateAtIndex(prev, index, { [field]: value }));
+    setQuestions((prev) => 
+      prev.map((q) => (q.tempId === id ? { ...q, [field]: value } : q))
+    );
   };
 
-  const removeQuestion = (index: number): void => {
-    setQuestions((prev) => prev.filter((_, i) => i !== index));
+  const removeQuestion = (id: string): void => {
+    setQuestions((prev) => prev.filter((q) => q.tempId !== id));
   };
 
-  const addOption = (qIndex: number): void => {
-    setQuestions((prev) => {
-      const currentOptions = prev[qIndex].options || [];
-      const newOptions = [...currentOptions, createDraftOption()];
-      return updateAtIndex(prev, qIndex, { options: newOptions });
-    });
+  const addOption = (qId: string): void => {
+    setQuestions((prev) => 
+      prev.map((q) => 
+        q.tempId === qId 
+          ? { ...q, options: [...(q.options || []), createDraftOption()] }
+          : q
+      )
+    );
   };
 
-  const updateOption = (qIndex: number, oIndex: number, value: string): void => {
-    setQuestions((prev) => {
-      const question = prev[qIndex];
-      if (!question.options) return prev;
-
-      const newOptions = updateAtIndex(question.options, oIndex, { value });
-      return updateAtIndex(prev, qIndex, { options: newOptions });
-    });
+  const updateOption = (qId: string, oId: string, value: string): void => {
+    setQuestions((prev) => 
+      prev.map((q) => 
+        q.tempId === qId && q.options
+          ? {
+              ...q,
+              options: q.options.map((o) => (o.id === oId ? { ...o, value } : o)),
+            }
+          : q
+      )
+    );
   };
 
-  const removeOption = (qIndex: number, oIndex: number): void => {
-    setQuestions((prev) => {
-      const question = prev[qIndex];
-      if (!question.options) return prev;
-
-      const newOptions = question.options.filter((_, i) => i !== oIndex);
-      return updateAtIndex(prev, qIndex, { options: newOptions });
-    });
+  const removeOption = (qId: string, oId: string): void => {
+    setQuestions((prev) => 
+      prev.map((q) => 
+        q.tempId === qId && q.options
+          ? {
+              ...q,
+              options: q.options.filter((o) => o.id !== oId),
+            }
+          : q
+      )
+    );
   };
 
   const saveForm = async (): Promise<void> => {

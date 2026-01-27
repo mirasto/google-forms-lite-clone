@@ -1,71 +1,82 @@
+import { type ChangeEvent, type ReactElement } from "react";
 import { type Option } from "@types";
 import styles from "./QuestionsInput.module.css";
+import { ChoiceOption } from "./ChoiceOption";
 
 interface InputProps {
   id: string;
   value: string;
   onChange: (id: string, value: string) => void;
   hasError: boolean;
+  labelledBy?: string;
 }
 
-export const TextInput = ({ id, value, onChange, hasError }: InputProps) => (
+export const TextInput = ({ id, value, onChange, hasError, labelledBy }: InputProps): ReactElement => (
   <div className={styles.textInputWrapper}>
     <input
+      id={id}
       className={`${styles.textInput} ${hasError ? styles.textInputError : ""}`}
       type="text"
       placeholder="Your answer"
       value={value}
-      onChange={(e) => onChange(id, e.target.value)}
+      onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(id, e.target.value)}
       aria-invalid={hasError}
+      aria-labelledby={labelledBy}
     />
     <div className={styles.focusedLine} />
   </div>
 );
 
-export const DateInput = ({ id, value, onChange, hasError }: InputProps) => (
+export const DateInput = ({ id, value, onChange, hasError, labelledBy }: InputProps): ReactElement => (
   <div className={styles.dateInputWrapper}>
     <input
+      id={id}
       className={`${styles.dateInput} ${hasError ? styles.dateInputError : ""}`}
       type="date"
       value={value}
-      onChange={(e) => onChange(id, e.target.value)}
+      onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(id, e.target.value)}
       aria-invalid={hasError}
+      aria-labelledby={labelledBy}
     />
   </div>
 );
 
-interface ChoiceProps {
+type SingleValueChange = (id: string, value: string) => void;
+type CheckboxChange = (id: string, value: string, checked: boolean) => void;
+
+type ChoiceProps = {
   id: string;
   options: Option[];
   selectedValues: string[];
-  type: "RADIO" | "CHECKBOX";
-  onChange: ((id: string, value: string) => void) | ((id: string, value: string, checked: boolean) => void);
   hasError: boolean;
-}
-
-export const ChoiceInput = ({ id, options, selectedValues, type, onChange, hasError }: ChoiceProps) => (
-  <div className={styles.optionsList}>
-    {options?.map((option) => (
-      <label key={option.id} className={styles.optionItem}>
-        <div className={styles.controlWrapper}>
-          <input
-            type={type === "CHECKBOX" ? "checkbox" : "radio"}
-            name={id}
-            value={option.value}
-            checked={selectedValues.includes(option.value)}
-            className={styles.realControl}
-            onChange={(e) => {
-              if (type === "CHECKBOX") {
-                (onChange as (id: string, value: string, checked: boolean) => void)(id, option.value, e.target.checked);
-              } else {
-                (onChange as (id: string, value: string) => void)(id, option.value);
-              }
-            }}
-          />
-          <div className={`${styles.fakeControl} ${type === "CHECKBOX" ? styles.fakeCheckbox : styles.fakeRadio} ${hasError ? styles.fakeControlError : ""}`} />
-        </div>
-        <span className={styles.optionText}>{option.value}</span>
-      </label>
-    ))}
-  </div>
+  labelledBy?: string;
+} & (
+  | { type: "RADIO"; onChange: SingleValueChange }
+  | { type: "CHECKBOX"; onChange: CheckboxChange }
 );
+
+export const ChoiceInput = (props: ChoiceProps): ReactElement => {
+  const { id, options, selectedValues, hasError, labelledBy } = props;
+
+  return (
+    <div className={styles.optionsList} role={props.type === "RADIO" ? "radiogroup" : "group"} aria-labelledby={labelledBy}>
+      {options.map((option) => (
+        <ChoiceOption
+          key={option.id}
+          groupId={id}
+          option={option}
+          type={props.type}
+          isSelected={selectedValues.includes(option.value)}
+          hasError={hasError}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            if (props.type === "CHECKBOX") {
+              props.onChange(id, option.value, e.target.checked);
+            } else {
+              props.onChange(id, option.value);
+            }
+          }}
+        />
+      ))}
+    </div>
+  );
+};

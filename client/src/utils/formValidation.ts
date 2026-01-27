@@ -1,5 +1,5 @@
 import { QuestionType, type DraftQuestion } from '@types';
-import { VALIDATION_MESSAGES } from '../constants';
+import { VALIDATION_MESSAGES } from '@constants';
 
 export const validateForm = (title: string, questions: DraftQuestion[]): string | null => {
     if (!title.trim()) return VALIDATION_MESSAGES.NO_TITLE;

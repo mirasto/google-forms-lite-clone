@@ -13,9 +13,8 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
       '@components': fileURLToPath(new URL('./src/components', import.meta.url)),
       '@pages': fileURLToPath(new URL('./src/pages', import.meta.url)),
-      '@routes': fileURLToPath(new URL('./src/routes', import.meta.url)),
-      '@redux': fileURLToPath(new URL('./src/redux', import.meta.url)),
-      '@types': fileURLToPath(new URL('./src/types.ts', import.meta.url)),
+      '@types': fileURLToPath(new URL('./src/shared/types.ts', import.meta.url)),
+      '@constants': fileURLToPath(new URL('./src/shared/constants.ts', import.meta.url)),
     },
   },
   optimizeDeps: {

@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, type ReactElement } from "react";
+
 import Home from "./pages/Home/Home";
 
 const FormFiller = lazy(() => import("./pages/FormFiller/FormFiller"));
@@ -7,9 +8,9 @@ const FormBuilder = lazy(() => import("./pages/FormBuilder/FormBuilder"));
 const FormResponses = lazy(() => import("./pages/FormResponses/FormResponses"));
 
 
-function App() {
+function App(): ReactElement {
   return (
-    <Suspense fallback={<div className="loader">Loading page...</div>}>
+    <Suspense fallback={<div className="loader" role="status" aria-live="polite">Loading page...</div>}>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/forms/new" element={<FormBuilder />} />

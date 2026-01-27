@@ -1,9 +1,10 @@
+import type { ReactElement } from "react";
 import BuilderHeader from "../../components/FormBuilder/BuilderHeader";
 import BuilderQuestionCard from "../../components/FormBuilder/BuilderQuestionCard";
 import { useFormBuilder } from "../../hooks/useFormBuilder";
 import styles from "./FormBuilder.module.css";
 
-const FormBuilder = () => {
+const FormBuilder = (): ReactElement => {
   const {
     title,
     setTitle,
@@ -40,10 +41,9 @@ const FormBuilder = () => {
       />
 
       <div className={styles.questionsList}>
-        {questions.map((question, index) => (
+        {questions.map((question) => (
           <BuilderQuestionCard
             key={question.tempId}
-            index={index}
             question={question}
             actions={actions}
           />

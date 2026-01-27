@@ -1,3 +1,4 @@
+import type { ReactElement } from "react";
 import { type Question, QuestionType } from "@types";
 import styles from "./FormQuestions.module.css";
 import { TextInput, DateInput, ChoiceInput } from "./QuestionsInput";
@@ -16,24 +17,44 @@ const FormQuestions = ({
   errors,
   handleInputChange,
   handleCheckboxChange
-}: FormQuestionsProps) => {
+}: FormQuestionsProps): ReactElement => {
   const error = errors[question.id];
+  const labelId = `question-label-${question.id}`;
+  const currentValue = answers?.[0] || "";
+  const hasError = error !== undefined;
 
-  const renderInput = () => {
+  const renderInput = (): ReactElement | null => {
     switch (question.type) {
       case QuestionType.TEXT:
-        return <TextInput id={question.id} value={answers[0] || ""} onChange={handleInputChange} hasError={!!error} />;
+        return (
+          <TextInput
+            id={question.id}
+            value={currentValue}
+            onChange={handleInputChange}
+            hasError={hasError}
+            labelledBy={labelId}
+          />
+        );
       case QuestionType.DATE:
-        return <DateInput id={question.id} value={answers[0] || ""} onChange={handleInputChange} hasError={!!error} />;
+        return (
+          <DateInput
+            id={question.id}
+            value={currentValue}
+            onChange={handleInputChange}
+            hasError={hasError}
+            labelledBy={labelId}
+          />
+        );
       case QuestionType.MULTIPLE_CHOICE:
         return (
           <ChoiceInput
             id={question.id}
             options={question.options || []}
-            selectedValues={answers}
+            selectedValues={answers || []}
             type="RADIO"
             onChange={handleInputChange}
-            hasError={!!error}
+            hasError={hasError}
+            labelledBy={labelId}
           />
         );
       case QuestionType.CHECKBOX:
@@ -41,10 +62,11 @@ const FormQuestions = ({
           <ChoiceInput
             id={question.id}
             options={question.options || []}
-            selectedValues={answers}
+            selectedValues={answers || []}
             type="CHECKBOX"
             onChange={handleCheckboxChange}
-            hasError={!!error}
+            hasError={hasError}
+            labelledBy={labelId}
           />
         );
       default:
@@ -58,9 +80,9 @@ const FormQuestions = ({
       className={`${styles.questionCard} ${error ? styles.cardError : ""}`}
     >
       <div className={styles.questionHeader}>
-        <span className={styles.questionText}>
+        <span id={labelId} className={styles.questionText}>
           {question.text}
-          {question.required && <span className={styles.requiredStar}> *</span>}
+          {question.required && <span className={styles.requiredStar} aria-hidden="true"> *</span>}
         </span>
       </div>
 

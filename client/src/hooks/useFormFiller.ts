@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { useGetFormQuery, useSubmitResponseMutation } from '../store/api';
-import { VALIDATION_MESSAGES, API_MESSAGES } from '../constants';
+import { VALIDATION_MESSAGES, API_MESSAGES } from '@constants';
 
 export const useFormFiller = () => {
   const { id } = useParams<{ id: string }>();
@@ -55,7 +55,8 @@ export const useFormFiller = () => {
     form.questions.forEach((question) => {
       const answer = answers[question.id];
       if (question.required) {
-        const isValid = answer && answer.length > 0 && answer.some(val => val.trim() !== '');
+       
+        const isValid = Array.isArray(answer) && answer.length > 0 && answer.some(val => val.trim() !== '');
         
         if (!isValid) {
           newErrors[question.id] = VALIDATION_MESSAGES.REQUIRED_FIELD;

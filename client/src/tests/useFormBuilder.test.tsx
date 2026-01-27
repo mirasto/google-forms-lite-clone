@@ -55,12 +55,14 @@ describe('useFormBuilder', () => {
 
     act(() => {
       result.current.setTitle('Test Form');
-      result.current.updateQuestion(0, 'text', 'Question 1');
-      result.current.updateQuestion(0, 'type', QuestionType.MULTIPLE_CHOICE);
+      const qId = result.current.questions[0].tempId;
+      result.current.updateQuestion(qId, 'text', 'Question 1');
+      result.current.updateQuestion(qId, 'type', QuestionType.MULTIPLE_CHOICE);
     });
 
     act(() => {
-      result.current.addOption(0);
+      const qId = result.current.questions[0].tempId;
+      result.current.addOption(qId);
     });
 
     await act(async () => {
@@ -76,17 +78,25 @@ describe('useFormBuilder', () => {
 
     act(() => {
       result.current.setTitle('Test Form');
-      result.current.updateQuestion(0, 'text', 'Question 1');
-      result.current.updateQuestion(0, 'type', QuestionType.MULTIPLE_CHOICE);
+      const qId = result.current.questions[0].tempId;
+      result.current.updateQuestion(qId, 'text', 'Question 1');
+      result.current.updateQuestion(qId, 'type', QuestionType.MULTIPLE_CHOICE);
     });
 
     act(() => {
-      result.current.addOption(0);
-      result.current.updateOption(0, 0, 'Option A');
+      const qId = result.current.questions[0].tempId;
+      result.current.addOption(qId);
     });
 
     act(() => {
-      result.current.addOption(0);
+      const qId = result.current.questions[0].tempId;
+      const oId = result.current.questions[0].options![0].id;
+      result.current.updateOption(qId, oId, 'Option A');
+    });
+
+    act(() => {
+      const qId = result.current.questions[0].tempId;
+      result.current.addOption(qId);
     });
 
     await act(async () => {

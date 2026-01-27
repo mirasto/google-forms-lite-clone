@@ -1,23 +1,28 @@
+import type { ChangeEvent, ReactElement } from "react";
 import { QuestionType, type DraftOption } from "@types";
 import styles from "./OptionManager.module.css";
 
-interface OptionManagerProps {
-  questionIndex: number;
+export interface OptionManagerProps {
+  questionId: string;
   type: QuestionType;
   options?: DraftOption[];
-  addOption: (qIndex: number) => void;
-  updateOption: (qIndex: number, oIndex: number, value: string) => void;
-  removeOption: (qIndex: number, oIndex: number) => void;
+  addOption: (qId: string) => void;
+  updateOption: (qId: string, oId: string, value: string) => void;
+  removeOption: (qId: string, oId: string) => void;
 }
 
 const OptionManager = ({
-  questionIndex,
+  questionId,
   type,
   options,
   addOption,
   updateOption,
   removeOption,
-}: OptionManagerProps) => {
+}: OptionManagerProps): ReactElement => {
+  const handleOptionChange = (e: ChangeEvent<HTMLInputElement>, optionId: string) => {
+    updateOption(questionId, optionId, e.target.value);
+  };
+
   return (
     <div className={styles.optionsList}>
       {options?.map((option, optionIndex) => (
@@ -31,14 +36,12 @@ const OptionManager = ({
           <input
             className={styles.input}
             value={option.value}
-            onChange={(e) =>
-              updateOption(questionIndex, optionIndex, e.target.value)
-            }
+            onChange={(e) => handleOptionChange(e, option.id)}
             placeholder={`Option ${optionIndex + 1}`}
           />
           <button
             type="button"
-            onClick={() => removeOption(questionIndex, optionIndex)}
+            onClick={() => removeOption(questionId, option.id)}
             className={styles.deleteOptionBtn}
             title="Remove option"
             aria-label="Remove option"
@@ -50,7 +53,7 @@ const OptionManager = ({
       <button
         type="button"
         className={styles.addOptionBtn}
-        onClick={() => addOption(questionIndex)}
+        onClick={() => addOption(questionId)}
       >
         + Add Option
       </button>

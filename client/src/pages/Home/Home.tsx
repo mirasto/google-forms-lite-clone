@@ -1,14 +1,15 @@
 import { Link } from 'react-router-dom';
+import type { ReactElement } from 'react';
 import FormsCard from '../../components/Home/FormsCard';
 import { useGetFormsQuery } from '../../store/api';
 import styles from './Home.module.css';
 
-const Home = () => {
+const Home = (): ReactElement => {
   const { data: forms, isLoading, error } = useGetFormsQuery();
 
   if (isLoading) {
     return (
-      <div className={styles.centered}>
+      <div className={styles.centered} role="status" aria-live="polite">
         <div className={styles.loader}>Loading forms...</div>
       </div>
     );
@@ -16,7 +17,7 @@ const Home = () => {
 
   if (error) {
     return (
-      <div className={styles.centered}>
+      <div className={styles.centered} role="alert">
         <div className={styles.error}>
           <p>Error loading forms. Please try again later.</p>
         </div>
@@ -25,15 +26,15 @@ const Home = () => {
   }
 
   return (
-    <div className={styles.container}>
+    <main className={styles.container}>
       <header className={styles.header}>
         <h1 className={styles.title}>Your Forms</h1>
-        <Link to="/forms/new" className={styles.createButton}>
-          <span>+</span> Create New Form
+        <Link to="/forms/new" className={styles.createButton} aria-label="Create a new form">
+          <span aria-hidden="true">+</span> Create New Form
         </Link>
       </header>
 
-      <section className={styles.content}>
+      <section className={styles.content} aria-label="Forms list">
         {forms && forms.length > 0 ? (
           <div className={styles.formGrid}>
             {forms.map(form => (
@@ -50,7 +51,7 @@ const Home = () => {
           </div>
         )}
       </section>
-    </div>
+    </main>
   );
 };
 

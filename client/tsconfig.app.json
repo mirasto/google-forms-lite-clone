@@ -30,7 +30,10 @@
     "baseUrl": ".",
     "paths": {
       "@types": [
-        "src/types.ts"
+        "src/shared/types.ts"
+      ],
+      "@constants": [
+        "src/shared/constants.ts"
       ]
     }
   },

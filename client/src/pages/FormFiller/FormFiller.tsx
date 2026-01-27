@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
+import type { ReactElement } from "react";
 import { useFormFiller } from "../../hooks/useFormFiller";
 import styles from "./FormFiller.module.css";
 import FormQuestions from "../../components/FormFiller/FormQuestions";
 
-const FormFiller = () => {
+const FormFiller = (): ReactElement => {
   const {
     form, isFormLoading, formError, isSubmitting,
     isSuccess, answers, errors, handleInputChange,
@@ -12,7 +13,7 @@ const FormFiller = () => {
 
   if (isFormLoading) {
     return (
-      <div className={styles.centered}>
+      <div className={styles.centered} role="status" aria-live="polite">
         <div className={styles.loader}>Loading form...</div>
       </div>
     );
@@ -20,7 +21,7 @@ const FormFiller = () => {
 
   if (formError || !form) {
     return (
-      <div className={styles.centered}>
+      <div className={styles.centered} role="alert">
         <div className={styles.errorCard}>
           <h2>Form not found</h2>
           <p>The form you are looking for does not exist or has been deleted.</p>
@@ -32,7 +33,7 @@ const FormFiller = () => {
 
   if (isSuccess) {
     return (
-      <div className={styles.container}>
+      <main className={styles.container} role="main">
         <div className={styles.successCard}>
           <div className={styles.accentBar} />
           <h1 className={styles.successTitle}>{form.title}</h1>
@@ -41,12 +42,12 @@ const FormFiller = () => {
             <Link to="/" className={styles.homeLink}>Submit another response</Link>
           </div>
         </div>
-      </div>
+      </main>
     );
   }
 
   return (
-    <div className={styles.container}>
+    <main className={styles.container}>
       <header className={styles.titleCard}>
         <div className={styles.accentBar} />
         <h1 className={styles.formTitle}>{form.title}</h1>
@@ -80,7 +81,7 @@ const FormFiller = () => {
         </div>
       </form>
 
-    </div>
+    </main>
   );
 };
 
