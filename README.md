@@ -60,29 +60,8 @@ A simplified clone of Google Forms built as a monorepo using React 19, NestJS, a
     ```bash
     npm run dev
     ```
-
     - **Client:** [http://localhost:5173](http://localhost:5173)
     - **Server:** [http://localhost:4000](http://localhost:4000)
-
-### Building for Production
-
-To build the client application for production deployment:
-
-1.  **Build the Client:**
-    Run the build command from the `client` directory:
-    ```bash
-    cd client
-    npm run build
-    ```
-    This generates a `dist` folder in the `client` directory with the optimized static files.
-
-2.  **Preview Production Build:**
-    You can verify the build locally by running:
-    ```bash
-    npm run preview
-    ```
-
-    *Note: The server currently runs directly from source (using `tsx`) and does not require a build step for development.*
 
 ## Running Tests
 
