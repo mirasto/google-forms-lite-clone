@@ -1,7 +1,47 @@
 import { type ChangeEvent } from "react";
+import Select, { type SingleValue, type StylesConfig } from "react-select";
 import { QuestionType, type DraftQuestion } from "@types";
 import styles from "./BuilderQuestionCard.module.css";
 import OptionManager from "./OptionManager";
+
+interface QuestionTypeOption {
+  value: QuestionType;
+  label: string;
+}
+
+const QUESTION_TYPE_OPTIONS: QuestionTypeOption[] = [
+  { value: QuestionType.TEXT, label: 'Short Answer' },
+  { value: QuestionType.MULTIPLE_CHOICE, label: 'Multiple Choice' },
+  { value: QuestionType.CHECKBOX, label: 'Checkboxes' },
+  { value: QuestionType.DATE, label: 'Date' },
+];
+
+const customSelectStyles: StylesConfig<QuestionTypeOption, false> = {
+  control: (provided) => ({
+    ...provided,
+    minWidth: '200px',
+    padding: '2px',
+    borderRadius: '4px',
+    borderColor: '#ccc',
+    boxShadow: 'none',
+    '&:hover': {
+      borderColor: '#b3b3b3',
+    },
+  }),
+  option: (provided, state) => ({
+    ...provided,
+    backgroundColor: state.isSelected ? '#e8f0fe' : state.isFocused ? '#f1f3f4' : 'white',
+    color: state.isSelected ? '#1967d2' : '#202124',
+    cursor: 'pointer',
+    ':active': {
+      backgroundColor: '#e8f0fe',
+    },
+  }),
+  menu: (provided) => ({
+    ...provided,
+    zIndex: 10,
+  }),
+};
 
 interface BuilderQuestionCardProps {
   index: number;
@@ -34,10 +74,13 @@ const BuilderQuestionCard = ({
     updateQuestion(index, "text", e.target.value);
   };
 
-  const handleTypeChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    updateQuestion(index, "type", e.target.value as QuestionType);
+  const handleTypeChange = (newValue: SingleValue<QuestionTypeOption>) => {
+    if (newValue) {
+      updateQuestion(index, "type", newValue.value);
+    }
   };
 
+  const selectedOption = QUESTION_TYPE_OPTIONS.find(opt => opt.value === question.type);
 
   return (
     <div className={styles.questionCard}>
@@ -49,17 +92,16 @@ const BuilderQuestionCard = ({
           placeholder="Question Text"
         />
 
-        <select
-          className={styles.select}
-          value={question.type}
-          onChange={handleTypeChange}
-          aria-label="Question Type"
-        >
-          <option value={QuestionType.TEXT}>Short Answer</option>
-          <option value={QuestionType.MULTIPLE_CHOICE}>Multiple Choice</option>
-          <option value={QuestionType.CHECKBOX}>Checkboxes</option>
-          <option value={QuestionType.DATE}>Date</option>
-        </select>
+        <div className={styles.selectWrapper}>
+          <Select
+            value={selectedOption}
+            onChange={handleTypeChange}
+            options={QUESTION_TYPE_OPTIONS}
+            styles={customSelectStyles}
+            aria-label="Question Type"
+            isSearchable={false}
+          />
+        </div>
 
         <button
           onClick={() => removeQuestion(index)}
@@ -68,7 +110,10 @@ const BuilderQuestionCard = ({
           aria-label="Remove question"
           type="button"
         >
-          ×
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
         </button>
       </div>
 

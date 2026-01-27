@@ -34,12 +34,8 @@
     border-bottom: 2px solid #673ab7;
 }
 
-.select {
-    padding: 12px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    background-color: white;
-    outline: none;
+.selectWrapper {
+    min-width: 200px;
 }
 
 .deleteBtn {
@@ -48,17 +44,21 @@
     border: none;
     padding: 8px;
     cursor: pointer;
-    font-size: 18px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.2s;
+    transition: all 0.2s;
 }
 
 .deleteBtn:hover {
-    background: #f1f3f4;
+    background: #fce8e6;
     color: #d93025;
+}
+
+.deleteBtn svg {
+    width: 20px;
+    height: 20px;
 }
 
 .questionFooter {
