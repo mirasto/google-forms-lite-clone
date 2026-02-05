@@ -84,24 +84,31 @@ npm run test
 ## Project Structure
 
 ```
-google-forms-clone-new/
+google-forms-lite-clone/
 ├── client/                 # React Frontend (Vite)
 │   ├── src/
 │   │   ├── components/     # UI Components
-│   │   ├── hooks/          # Custom hooks (useFormBuilder, useFormFiller)
+│   │   ├── graphql/        # GraphQL operations (.graphql)
+│   │   ├── hooks/          # Custom hooks
 │   │   ├── pages/          # Main views (Home, FormBuilder, FormFiller)
+│   │   ├── shared/         # Client-local types and constants
 │   │   ├── store/          # Redux store and API slices
-│   │   └── types.ts        # Shared TypeScript interfaces
+│   │   ├── utils/          # Utility functions
+│   │   ├── App.tsx         # App component
+│   │   └── main.tsx        # Entry point
 │   └── vite.config.ts
 ├── server/                 # NestJS Backend
 │   ├── src/
 │   │   ├── forms/          # Forms Module (Resolvers, Service, DTOs)
 │   │   ├── app.module.ts   # Main App Module
+│   │   ├── constants.ts    # Server constants
+│   │   ├── factories.ts    # Factory functions for data creation
 │   │   ├── main.ts         # Server Entry Point
 │   │   ├── schema.ts       # GraphQL Type Definitions
+│   │   ├── types.ts        # Server internal types
 │   │   └── validation.ts   # Zod Validation Schemas
 │   └── vitest.config.ts
-├── shared/                 # Shared Types Workspace
+├── shared/                 # Shared Workspace (Types interfaces)
 └── package.json            # Root configuration
 ```
 
